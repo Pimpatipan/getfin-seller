@@ -1,0 +1,691 @@
+﻿[{
+        "enabled": true,
+        "display": true,
+        "productCount": 0,
+        "categoryList": [{
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [{
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [{
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 7,
+                                "name": "A111",
+                                "code": "A111",
+                                "urlKey": "A111"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 8,
+                                "name": "A112",
+                                "code": "A112",
+                                "urlKey": "A112"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 9,
+                                "name": "A113",
+                                "code": "A113",
+                                "urlKey": "A113"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 10,
+                                "name": "A114",
+                                "code": "A114",
+                                "urlKey": "A114"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 11,
+                                "name": "A115",
+                                "code": "A115",
+                                "urlKey": "A115"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 12,
+                                "name": "A116",
+                                "code": "A116",
+                                "urlKey": "A116"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 13,
+                                "name": "A117",
+                                "code": "A117",
+                                "urlKey": "A117"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 14,
+                                "name": "A118",
+                                "code": "A118",
+                                "urlKey": "A118"
+                            }
+                        ],
+                        "id": 4,
+                        "name": "A11",
+                        "code": "A11",
+                        "urlKey": "A11"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 5,
+                        "name": "A12",
+                        "code": "A12",
+                        "urlKey": "A12"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 6,
+                        "name": "A13",
+                        "code": "A13",
+                        "urlKey": "A13"
+                    }
+                ],
+                "id": 2,
+                "name": "A1",
+                "code": "A1",
+                "urlKey": "A1"
+            },
+            {
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [{
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [{
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 15,
+                                "name": "A211",
+                                "code": "A211",
+                                "urlKey": "A211"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 16,
+                                "name": "A212",
+                                "code": "A212",
+                                "urlKey": "A212"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 17,
+                                "name": "A213",
+                                "code": "A213",
+                                "urlKey": "A213"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 18,
+                                "name": "A214",
+                                "code": "A214",
+                                "urlKey": "A214"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 19,
+                                "name": "A215",
+                                "code": "A215",
+                                "urlKey": "A215"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 20,
+                                "name": "A216",
+                                "code": "A216",
+                                "urlKey": "A216"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 21,
+                                "name": "A217",
+                                "code": "A217",
+                                "urlKey": "A217"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 22,
+                                "name": "A218",
+                                "code": "A218",
+                                "urlKey": "A218"
+                            }
+                        ],
+                        "id": 23,
+                        "name": "A21",
+                        "code": "A21",
+                        "urlKey": "A21"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 24,
+                        "name": "A22",
+                        "code": "A22",
+                        "urlKey": "A22"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 25,
+                        "name": "A23",
+                        "code": "A23",
+                        "urlKey": "A23"
+                    }
+                ],
+                "id": 3,
+                "name": "A2",
+                "code": "A2",
+                "urlKey": "A2"
+            }
+        ],
+        "id": 1,
+        "name": "A",
+        "code": "A",
+        "urlKey": "A"
+    },
+    {
+        "enabled": true,
+        "display": true,
+        "productCount": 0,
+        "categoryList": [{
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [{
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [{
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 37,
+                                "name": "B111",
+                                "code": "B111",
+                                "urlKey": "B111"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 38,
+                                "name": "B112",
+                                "code": "B112",
+                                "urlKey": "B112"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 39,
+                                "name": "B113",
+                                "code": "B113",
+                                "urlKey": "B113"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 310,
+                                "name": "B114",
+                                "code": "B114",
+                                "urlKey": "B114"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 311,
+                                "name": "B115",
+                                "code": "B115",
+                                "urlKey": "B115"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 312,
+                                "name": "B116",
+                                "code": "B116",
+                                "urlKey": "B116"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 313,
+                                "name": "B117",
+                                "code": "B117",
+                                "urlKey": "B117"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 314,
+                                "name": "B118",
+                                "code": "B118",
+                                "urlKey": "B118"
+                            }
+                        ],
+                        "id": 34,
+                        "name": "B11",
+                        "code": "B11",
+                        "urlKey": "B11"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 35,
+                        "name": "B12",
+                        "code": "B12",
+                        "urlKey": "B12"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 36,
+                        "name": "B13",
+                        "code": "B13",
+                        "urlKey": "B13"
+                    }
+                ],
+                "id": 32,
+                "name": "B1",
+                "code": "B1",
+                "urlKey": "B1"
+            },
+            {
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [{
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 23,
+                        "name": "B21",
+                        "code": "B21",
+                        "urlKey": "B21"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 24,
+                        "name": "B22",
+                        "code": "B22",
+                        "urlKey": "B22"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 25,
+                        "name": "B23",
+                        "code": "B23",
+                        "urlKey": "B23"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 26,
+                        "name": "B24",
+                        "code": "B24",
+                        "urlKey": "B24"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 27,
+                        "name": "B25",
+                        "code": "B25",
+                        "urlKey": "B25"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 28,
+                        "name": "B26",
+                        "code": "B26",
+                        "urlKey": "B26"
+                    }
+                ],
+                "id": 33,
+                "name": "B2",
+                "code": "B2",
+                "urlKey": "B2"
+            }
+        ],
+        "id": 31,
+        "name": "B",
+        "code": "B",
+        "urlKey": "B"
+    },
+    {
+        "enabled": true,
+        "display": true,
+        "productCount": 0,
+        "categoryList": [{
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [{
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [{
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 47,
+                                "name": "C111",
+                                "code": "C111",
+                                "urlKey": "C111"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 48,
+                                "name": "C112",
+                                "code": "C112",
+                                "urlKey": "C112"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 49,
+                                "name": "C113",
+                                "code": "C113",
+                                "urlKey": "C113"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 410,
+                                "name": "C114",
+                                "code": "C114",
+                                "urlKey": "C114"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 411,
+                                "name": "C115",
+                                "code": "C115",
+                                "urlKey": "C115"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 412,
+                                "name": "C116",
+                                "code": "C116",
+                                "urlKey": "C116"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 413,
+                                "name": "C117",
+                                "code": "C117",
+                                "urlKey": "C117"
+                            },
+                            {
+                                "enabled": true,
+                                "display": true,
+                                "productCount": 0,
+                                "categoryList": [],
+                                "id": 414,
+                                "name": "C118",
+                                "code": "C118",
+                                "urlKey": "C118"
+                            }
+                        ],
+                        "id": 44,
+                        "name": "C11",
+                        "code": "C11",
+                        "urlKey": "C11"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 45,
+                        "name": "C12",
+                        "code": "C12",
+                        "urlKey": "C12"
+                    },
+                    {
+                        "enabled": true,
+                        "display": true,
+                        "productCount": 0,
+                        "categoryList": [],
+                        "id": 46,
+                        "name": "C13",
+                        "code": "C13",
+                        "urlKey": "C13"
+                    }
+                ],
+                "id": 42,
+                "name": "C1",
+                "code": "C1",
+                "urlKey": "C1"
+            },
+            {
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [],
+                "id": 43,
+                "name": "C2",
+                "code": "C2",
+                "urlKey": "C2"
+            },
+            {
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [],
+                "id": 431,
+                "name": "C3",
+                "code": "C3",
+                "urlKey": "C3"
+            },
+            {
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [],
+                "id": 432,
+                "name": "C4",
+                "code": "C4",
+                "urlKey": "C4"
+            },
+            {
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [],
+                "id": 433,
+                "name": "C5",
+                "code": "C5",
+                "urlKey": "C5"
+            },
+            {
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [],
+                "id": 434,
+                "name": "C6",
+                "code": "C6",
+                "urlKey": "C6"
+            },
+            {
+                "enabled": true,
+                "display": true,
+                "productCount": 0,
+                "categoryList": [],
+                "id": 435,
+                "name": "C6",
+                "code": "C6",
+                "urlKey": "C6"
+            }
+        ],
+        "id": 41,
+        "name": "C",
+        "code": "C",
+        "urlKey": "C"
+    },
+    {
+        "enabled": true,
+        "display": true,
+        "productCount": 0,
+        "categoryList": [],
+        "id": 418,
+        "name": "D",
+        "code": "D",
+        "urlKey": "D"
+    },
+    {
+        "enabled": true,
+        "display": true,
+        "productCount": 0,
+        "categoryList": [],
+        "id": 418,
+        "name": "E",
+        "code": "E",
+        "urlKey": "E"
+    },
+    {
+        "enabled": true,
+        "display": true,
+        "productCount": 0,
+        "categoryList": [],
+        "id": 419,
+        "name": "F",
+        "code": "F",
+        "urlKey": "F"
+    },
+    {
+        "enabled": true,
+        "display": true,
+        "productCount": 0,
+        "categoryList": [],
+        "id": 422,
+        "name": "G",
+        "code": "G",
+        "urlKey": "G"
+    },
+    {
+        "enabled": true,
+        "display": true,
+        "productCount": 0,
+        "categoryList": [],
+        "id": 418,
+        "name": "D",
+        "code": "D",
+        "urlKey": "D"
+    }
+]
