@@ -9,11 +9,11 @@
           </h1>
         </b-col>
         <b-col sm="6" class="text-right">
-          <b-input-group class="panel-input-serach">
+          <b-input-group class="panel-input-serach ml-auto">
             <b-form-input
               class="input-serach"
-              :placeholder="$t('productName') + ', SKU'"
-              v-model="filter.Search"
+              :placeholder="'SKU'"
+              v-model="filter.Sku"
               @keyup="handleSearch"
             ></b-form-input>
             <b-input-group-prepend @click="btnSearch">
@@ -56,15 +56,16 @@
                 ></div>
               </template>
               <template v-slot:cell(sku)="data">
-                <u class="m-0 text-primary">{{ data.item.sku }}</u>
+                <p class="m-0">{{ data.item.sku }}</p>
               </template>
 
               <template v-slot:cell(price)="data">
                 <p class="m-0">฿ {{ data.item.price | numeral("0,0.00") }}</p>
               </template>
-              <!-- <template v-slot:cell(category)="data">
-                <Category :categoryList="data.item.category" />
-              </template> -->
+
+              <template v-slot:cell(categoryName)="data">
+                <p class="m-0">{{ data.item.categoryName.join(" > ") }}</p>
+              </template>
 
               <template v-slot:table-busy>
                 <div class="text-center text-black my-2">
@@ -197,12 +198,12 @@ export default {
           label: `${this.$t("productDetails")}`,
           class: "w-100px"
         },
-        // {
-        //   key: "category",
-        //   label: `${this.$t("category")}`,
-        //   class: "w-100px",
-        //   tdClass: "text-left"
-        // },
+        {
+          key: "categoryName",
+          label: `${this.$t("category")}`,
+          class: "w-100px",
+          tdClass: "text-left"
+        },
         {
           key: "stock",
           label: `${this.$t("stock")}`,
@@ -341,6 +342,10 @@ export default {
         this.$refs.modalAlert.show();
 
         if (flag == 0) {
+          setTimeout(() => {
+            this.$refs.modalAlert.hide();
+          }, 3000);
+
           this.filter.Product = [];
           this.selected = [];
           this.getList();
@@ -392,10 +397,6 @@ export default {
 </script>
 
 <style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-
 .image {
   width: 100%;
   padding-top: 42.9%;

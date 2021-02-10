@@ -2,7 +2,7 @@
   <div :class="['div-input', className, 'mt-2', 'mx-3']">
     <div class="display-only" v-if="isDisplay"></div>
     <div class="row">
-      <div :class="['input-custom',{ error: isValidate }, classLabelName]">
+      <div :class="['input-custom', { error: isValidate }, classLabelName]">
         <label>
           {{ textFloat }}
           <span v-if="isRequired" class="text-danger">*</span>
@@ -25,34 +25,50 @@
           :disabled="disabled"
           :maxLength="maxLength"
         />
+        <div v-if="buttonAction" class="button-action" @click="buttonAction">
+          <font-awesome-icon
+            v-if="buttonActionIcon.length"
+            :icon="buttonActionIcon"
+            :class="[buttonActionClass]"
+          />
+        </div>
         <img :src="img" alt="logo-lang" v-if="img" class="logo-lang" />
         <span v-if="detail" class="text-desc">{{ detail }}</span>
-        </div>
+      </div>
+
       <div class="mx-2">
-       <div v-if="v && v.$error" >
-         
-      <span class="text-error" v-if="v.required == false">{{$t('required')}}. </span>
-      <span
-        class="text-error"
-        v-else-if="v.minLength == false"
-      >{{$t('enterAtLeast')}} {{v.$params.minLength.min}} {{$t('chars')}}. </span>
-      <span
-        class="text-error"
-        v-else-if="v.email == false"
-      >{{$t('emailError')}}.</span>
-      <span class="text-error" v-else-if="v.integer == false">{{$t('numOnly')}}. </span>
-      <span
-        class="text-error"
-        v-else-if="v.maxLength == false"
-      >{{$t('noMoreThan')}} {{v.$params.maxLength.max}} {{$t('chars')}}. </span>
-      <span class="text-error" v-else-if="v.decimal == false">{{$t('numOnly')}}. </span>
-      <span class="text-error" v-else-if="v.minValue == false">{{$t('minValueError')}}. </span>
-      <span class="text-error d" v-if="v.sameAsPassword == false">{{$t('passNotMatch')}}. </span>
-    </div>
+        <div v-if="v && v.$error">
+          <span class="text-error" v-if="v.required == false"
+            >{{ $t("required") }}.
+          </span>
+          <span class="text-error" v-else-if="v.minLength == false"
+            >{{ $t("enterAtLeast") }} {{ v.$params.minLength.min }}
+            {{ $t("chars") }}.
+          </span>
+          <span class="text-error" v-else-if="v.email == false"
+            >{{ $t("emailError") }}.</span
+          >
+          <span class="text-error" v-else-if="v.integer == false"
+            >{{ $t("numOnly") }}.
+          </span>
+          <span class="text-error" v-else-if="v.maxLength == false"
+            >{{ $t("noMoreThan") }} {{ v.$params.maxLength.max }}
+            {{ $t("chars") }}.
+          </span>
+          <span class="text-error" v-else-if="v.decimal == false"
+            >{{ $t("numOnly") }}.
+          </span>
+          <span class="text-error" v-else-if="v.minValue == false"
+            >{{ $t("minValueError") }}.
+          </span>
+          <span class="text-error d" v-if="v.sameAsPassword == false"
+            >{{ $t("passNotMatch") }}.
+          </span>
+        </div>
       </div>
-      </div>
     </div>
-    <!-- <div :class="['input-custom', { error: isValidate }]">
+  </div>
+  <!-- <div :class="['input-custom', { error: isValidate }]">
       <label>
         {{ textFloat }}
         <span v-if="isRequired" class="text-danger">*</span>
@@ -72,7 +88,6 @@
         :disabled="disabled"
       />
     </div> -->
-  </div>
 </template>
 
 <script>
@@ -80,83 +95,96 @@ export default {
   props: {
     textFloat: {
       required: true,
-      type: String,
+      type: String
     },
     placeholder: {
       required: true,
-      type: String,
+      type: String
     },
     type: {
       required: true,
-      type: String,
+      type: String
     },
     required: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     detail: {
       required: false,
-      type: String,
+      type: String
     },
     size: {
       required: false,
-      type: String,
+      type: String
     },
     name: {
       required: false,
-      type: String,
+      type: String
     },
     value: {
       required: false,
       // eslint-disable-next-line vue/require-prop-type-constructor
-      type: String | Number,
+      type: String | Number
     },
     isDisplay: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     isRequired: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     isValidate: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     v: {
       required: false,
-      type: Object,
+      type: Object
     },
     className: {
       required: false,
-      type: String,
+      type: String
     },
     img: {
       required: false,
-      type: String,
+      type: String
     },
     disabled: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     classLabelName: {
       required: false,
-      type: String,
+      type: String
     },
     maxLength: {
       required: false,
-      type: Number,
+      type: Number
     },
     classInputName: {
       required: false,
-      type: String,
+      type: String
     },
+    buttonAction: {
+      required: false,
+      type: Function
+    },
+    buttonActionClass: {
+      required: false,
+      type: String
+    },
+    buttonActionIcon: {
+      required: false,
+      type: Array
+      // default: []
+    }
   },
   methods: {
     onDataChange(event) {
       this.$emit("onDataChange", event.target.value);
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -175,7 +203,7 @@ export default {
   font-weight: bold;
 }
 .input-custom > input {
-  color:#333333;
+  color: #333333;
   /* background-color: white; */
   border: 1px solid #bcbcbc;
   border-radius: 0px;
@@ -190,6 +218,9 @@ export default {
 }
 .input-custom.error > input {
   border-color: red !important;
+}
+.input-custom > input:disabled {
+  background-color: #f5f5f5;
 }
 ::-webkit-input-placeholder {
   /* Edge */
@@ -226,6 +257,15 @@ export default {
 .d-grid {
   display: grid;
 }
+.button-action {
+  position: absolute;
+  right: 10px;
+  top: 0.3rem;
+  z-index: 6;
+}
+.button-action:hover {
+  cursor: pointer !important;
+}
 @media (max-width: 767.98px) {
   /* .div-input {
     margin-top: 0;
@@ -233,7 +273,12 @@ export default {
   .input-custom > label {
     font-size: 15px;
   }
-
+  .button-action {
+    position: absolute;
+    right: 10px;
+    top: 0rem;
+    z-index: 6;
+  }
   /* .input-custom > input {
     margin-left: 20px;
   } */
@@ -242,7 +287,5 @@ export default {
   .input-custom > input {
     margin-left: 25px;
   }
-
-  
 }
 </style>

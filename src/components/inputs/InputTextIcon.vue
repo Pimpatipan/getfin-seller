@@ -1,17 +1,21 @@
 <template>
   <div>
     <div class="d-flex login-main-box">
-      <font-awesome-icon v-if="icon" :icon="icon" class="text-white my-auto mr-2" />
+      <font-awesome-icon
+        v-if="icon"
+        :icon="icon"
+        class="text-white my-auto mr-2"
+      />
       <div :class="['div-input login-input w-100 m-0', className]">
         <div class="display-only" v-if="isDisplay"></div>
         <div :class="['input-custom', { error: isValidate }]">
-          <label>
-            {{textFloat}}
+          <label v-if="textFloat != ''">
+            {{ textFloat }}
             <span v-if="isRequired" class="text-danger">*</span>
           </label>
           <input
             :class="['custom-input']"
-            :type="type"
+            :type="type == 'password' ? passwordType : type"
             :placeholder="placeholder"
             :name="name"
             :required="required"
@@ -24,29 +28,54 @@
             :disabled="disabled"
             :maxLength="maxLength"
           />
+          <div v-if="isShowPassword" :class="['button-eye', { 'hastextFloat': textFloat != '' }]">
+            <font-awesome-icon
+              v-if="passwordType == 'password'"
+              @click="handleShowHidePassword"
+              :icon="['fas', 'eye-slash']"
+              :class="[buttonEyeClass]"
+            />
+            <font-awesome-icon
+              v-else
+              @click="handleShowHidePassword"
+              :icon="['fas', 'eye']"
+              :class="[buttonEyeClass]"
+            />
+          </div>
         </div>
         <img :src="img" alt="logo-lang" v-if="img" class="logo-lang" />
-        <span v-if="detail" class="text-desc">{{detail}}</span>
+        <span v-if="detail" class="text-desc">{{ detail }}</span>
       </div>
     </div>
-       <div v-if="v && v.$error">
-      <span class="text-error" v-if="v.required == false">{{$t('required')}}. </span>
-      <span
-        class="text-error"
-        v-else-if="v.minLength == false"
-      >{{$t('enterAtLeast')}} {{v.$params.minLength.min}} {{$t('chars')}}. </span>
-      <span
-        class="text-error"
-        v-else-if="v.email == false"
-      >{{$t('emailError')}}.</span>
-      <span class="text-error" v-else-if="v.integer == false">{{$t('numOnly')}}. </span>
-      <span
-        class="text-error"
-        v-else-if="v.maxLength == false"
-      >{{$t('noMoreThan')}} {{v.$params.maxLength.max}} {{$t('chars')}}. </span>
-      <span class="text-error" v-else-if="v.decimal == false">{{$t('numOnly')}}. </span>
-      <span class="text-error" v-else-if="v.minValue == false">{{$t('minValueError')}}. </span>
-      <span class="text-error d" v-if="v.sameAsPassword == false">{{$t('passNotMatch')}}. </span>
+    <div v-if="v && v.$error" class="">
+      <span class="text-error" v-if="v.required == false"
+        >{{ $t("required") }}.
+      </span>
+      <span class="text-error" v-else-if="v.minLength == false"
+        >{{ $t("enterAtLeast") }} {{ v.$params.minLength.min }}
+        {{ $t("chars") }}.
+      </span>
+      <span class="text-error" v-else-if="v.email == false"
+        >{{ $t("emailError") }}.</span
+      >
+      <span class="text-error" v-else-if="v.integer == false"
+        >{{ $t("numOnly") }}.
+      </span>
+      <span class="text-error" v-else-if="v.maxLength == false"
+        >{{ $t("noMoreThan") }} {{ v.$params.maxLength.max }} {{ $t("chars") }}.
+      </span>
+      <span class="text-error" v-else-if="v.decimal == false"
+        >{{ $t("numOnly") }}.
+      </span>
+      <span class="text-error" v-else-if="v.minValue == false"
+        >{{ $t("minValueError") }}.
+      </span>
+      <span class="text-error d" v-if="v.sameAsPassword == false"
+        >{{ $t("passNotMatch") }}.
+      </span>
+      <span class="text-error" v-else-if="v.password == false">
+        {{ $t("textValidatePassword") }}
+      </span>
     </div>
   </div>
 </template>
@@ -118,14 +147,34 @@ export default {
       required: false,
       type: String,
     },
-     maxLength: {
+    maxLength: {
       required: false,
       type: Number,
     },
+    isShowPassword: {
+      required: false,
+      type: Boolean,
+    },
+    buttonEyeClass: {
+      required: false,
+      type: String,
+    },
+  },
+  data() {
+    return {
+      passwordType: "password",
+    };
   },
   methods: {
     onDataChange(event) {
       this.$emit("onDataChange", event.target.value);
+    },
+    handleShowHidePassword() {
+      if (this.passwordType == "password") {
+        this.passwordType = "text";
+      } else {
+        this.passwordType = "password";
+      }
     },
   },
 };
@@ -197,6 +246,15 @@ export default {
 }
 .d-grid {
   display: grid;
+}
+.button-eye {
+  position: absolute;
+  right: 10px;
+  top: 0.8rem;
+  z-index: 6;
+}
+.hastextFloat {
+  top: 2rem;
 }
 @media (max-width: 767.98px) {
   /* .div-input {

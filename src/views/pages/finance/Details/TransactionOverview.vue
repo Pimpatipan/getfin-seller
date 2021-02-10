@@ -375,9 +375,6 @@ export default {
 </script>
 
 <style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
 .status-count-label {
   font-size: 20px;
   color: #1085ff;

@@ -32,8 +32,8 @@
               ><div class="w-100"><hr /></div
             ></b-col>
           </b-row>
-               <b-row>
-            <b-col>
+          <b-row>
+            <b-col v-if="dataWarningLog[6].warningLog.note != ''">
               <label class="font-weight-bold">{{ $t("noteFromAdmin") }}</label>
               <p>{{ dataWarningLog[6].warningLog.note }}</p>
             </b-col>
@@ -53,6 +53,7 @@
       </b-row>
       <ModalAlert ref="modalAlert" :text="modalMessage" />
       <ModalAlertError ref="modalAlertError" :text="modalMessage" />
+      <ModalLoading ref="modalLoading" :hasClose="false" />
     </b-container>
   </div>
 </template>
@@ -60,6 +61,7 @@
 <script>
 import ModalAlert from "@/components/modal/alert/ModalAlert";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
+import ModalLoading from "@/components/modal/alert/ModalLoading";
 import InputText from "../../profile/components/inputs/InputText";
 import { required } from "vuelidate/lib/validators";
 export default {
@@ -67,6 +69,7 @@ export default {
     InputText,
     ModalAlert,
     ModalAlertError,
+    ModalLoading,
   },
   props: {
     sellerInvoice: {
@@ -104,7 +107,7 @@ export default {
     this.form.invoice.invoicePrefix = this.invoice.user.seller.invoicePrefix;
   },
   watch: {
-    sellerInvoice: function() {
+    sellerInvoice: function () {
       this.form.invoice.id = this.invoice.user.seller.id;
       this.form.invoice.invoicePrefix = this.invoice.user.seller.invoicePrefix;
     },
@@ -113,7 +116,7 @@ export default {
     reloadData() {
       this.$emit("reloadData");
     },
-    checkForm: async function(flag) {
+    checkForm: async function (flag) {
       this.$v.$touch();
       if (this.$v.$error) {
         return;
@@ -122,7 +125,8 @@ export default {
       this.submit();
       this.flag = flag;
     },
-    submit: async function() {
+    submit: async function () {
+      this.$refs.modalLoading.show();
       let data = await this.$callApi(
         "patch",
         `${this.$baseUrl}/api/Profile/Invoice`,
@@ -130,15 +134,14 @@ export default {
         this.$headers,
         this.form.invoice
       );
-
+      this.$refs.modalLoading.hide();
       this.modalMessage = data.message;
       this.isDisable = false;
       if (data.result == 1) {
         this.$refs.modalAlert.show();
-        //this.reloadData();
-        // setTimeout(function() {
-        //   window.location.reload();
-        // }, 3000);
+     setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.$hasChange = false;
       } else {
         this.$refs.modalAlertError.show();

@@ -10,13 +10,13 @@
             }"
           ></div>
           <h1
-            class="header-login font-weight-bold text-uppercase f-20 d-block d-lg-none text-center mb-5 mb-lg-0"
+            class="header-login font-weight-bold text-uppercase f-20 d-block d-lg-none text-center mb-4 mb-lg-0"
           >
-            Welcome to Partner Center
+            {{ $t("welcome") }}
           </h1>
           <div class="position-relative w-100 d-none d-lg-block">
             <div class="header-logo-box">
-              <h1 class="m-0">Welcome to Partner Center</h1>
+              <h1 class="m-0">{{ $t("welcome") }}</h1>
 
               <div class="lines-box text-center">
                 <div class="lines w-100 mb-2"></div>
@@ -27,68 +27,46 @@
           </div>
         </div>
         <b-col md="9" lg="6" class="login mt-lg-3">
-          <!-- <div class="text-center mb-4">
-            
-            <h1 class="header-login font-weight-bold text-uppercase f-20">
-              Partner Center
-            </h1>
-          </div> -->
           <b-card-group>
             <b-card class="p-4 shadow-lg login-box">
               <div class="text-center text-white">
-                <h1 class="header-login my-4">Login</h1>
+                <h1 class="header-login my-3">{{ $t("login") }}</h1>
               </div>
               <b-card-body class="py-1">
                 <b-form>
                   <div class="mb-4">
-                    <div class="d-flex login-main-box">
-                      <font-awesome-icon
-                        icon="user"
-                        class="logo-login my-auto mr-2"
-                      />
-                      <InputText
-                        class="login-input w-100 m-0"
+                    <div class="d-flex align-items-baseline">
+                      <font-awesome-icon icon="user" class="logo-login mr-2" />
+                      <InputTextIcon
+                        class="login-input w-100 m-0 loginInput"
                         v-model="form.email"
-                        textFloat="Email"
-                        placeholder="Email"
+                        textFloat=""
+                        :placeholder="$t('email')"
                         type="email"
                         name="email"
-                        isRequired
                         @onKeyup="submitFormOnInput"
+                        :isValidate="$v.form.email.$error"
+                        :v="$v.form.email"
                       />
                     </div>
-
-                    <p
-                      class="text-danger mt-2 text-center"
-                      v-if="$v.form.email.$error"
-                    >
-                      This field can’t be empty.
-                    </p>
                   </div>
 
                   <div class="mb-4">
-                    <div class="d-flex login-main-box">
-                      <font-awesome-icon
-                        icon="lock"
-                        class="logo-login my-auto mr-2"
-                      />
-                      <InputText
-                        class="login-input w-100 m-0"
+                    <div class="d-flex align-items-baseline">
+                      <font-awesome-icon icon="lock" class="logo-login mr-2" />
+                      <InputTextIcon
+                        class="login-input w-100 m-0 loginInput"
                         v-model="form.password"
-                        textFloat="Password"
-                        placeholder="Password"
+                        textFloat=""
+                        :placeholder="$t('password')"
                         type="password"
                         name="password"
-                        isRequired
                         @onKeyup="submitFormOnInput"
+                        :isValidate="$v.form.password.$error"
+                        :v="$v.form.password"
+                        isShowPassword
                       />
                     </div>
-                    <p
-                      class="text-danger mt-2 text-center"
-                      v-if="$v.form.password.$error"
-                    >
-                      This field can’t be empty.
-                    </p>
                   </div>
 
                   <b-row v-if="error != ''" class="m-2 text-center">
@@ -101,7 +79,9 @@
 
                   <div class="mb-4 text-right forget-pass">
                     <router-link :to="'/forgetpassword'" class="">
-                      <span class="f-14 text-underline">Forget password?</span>
+                      <span class="f-14 text-underline"
+                        >{{ $t("forgetPass") }}?</span
+                      >
                     </router-link>
                   </div>
 
@@ -112,8 +92,9 @@
                         class="px-4 login-btn"
                         @click="checkForm"
                         :disabled="isDisable"
-                        >Login</b-button
-                      >
+                        >{{ $t("login") }}
+                        <b-spinner class="align-middle w-1rem" v-if="isLogin"></b-spinner
+                      ></b-button>
                     </b-col>
                   </b-row>
                 </b-form>
@@ -122,24 +103,46 @@
           </b-card-group>
           <div class="mt-4 text-center">
             <router-link :to="'/register'" class="">
-              <span class="f-14 text-underline">Become a Seller</span>
+              <!-- <span class="f-14 text-underline">{{ $t("becomePartner") }}</span> -->
+
+              <b-button type="button" class="px-4 become-partner f-14">{{
+                $t("becomePartner")
+              }}</b-button>
             </router-link>
           </div>
         </b-col>
+        <div class="text-center mt-3 col-12">
+          <span
+            :class="['pointer', $language == 'th' ? 'menuactive' : '']"
+            @click="changeLanguage('th')"
+            >ไทย</span
+          >
+          |
+          <span
+            :class="['pointer', $language == 'en' ? 'menuactive' : '']"
+            @click="changeLanguage('en')"
+            >English</span
+          >
+        </div>
       </b-row>
     </b-container>
   </div>
 </template>
 
 <script>
-import { required, email, minLength } from "vuelidate/lib/validators";
-import InputText from "@/components/inputs/InputText";
+import { required, email, minLength, helpers } from "vuelidate/lib/validators";
+import InputTextIcon from "@/components/inputs/InputTextIcon";
 import VueCookies from "vue-cookies";
+
+const password = helpers.regex(
+  "password",
+  /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!]+)$/
+);
 
 export default {
   name: "Login",
   components: {
-    InputText,
+    InputTextIcon,
   },
   data() {
     return {
@@ -151,13 +154,14 @@ export default {
       },
       isLoading: false,
       isDisable: false,
+      isLogin: false,
     };
   },
   validations() {
     return {
       form: {
         email: { required, email },
-        password: { required },
+        password: { required, password, minLength: minLength(6) },
       },
     };
   },
@@ -165,6 +169,17 @@ export default {
     await this.getLogo();
   },
   methods: {
+    changeLanguage(value) {
+      this.language = value;
+      this.$cookies.set(
+        "language",
+        value,
+        60 * 60 * 24 * 365,
+        "/",
+        this.$cookiesDomain
+      );
+      location.reload();
+    },
     getLogo: async function () {
       let resData = await this.$callApi(
         "get",
@@ -181,6 +196,7 @@ export default {
 
       this.isLoading = true;
       this.isDisable = true;
+      this.isLogin = true;
       this.error = "";
       let data = await this.$callApi(
         "post",
@@ -191,6 +207,7 @@ export default {
       );
       this.isLoading = false;
       this.isDisable = false;
+      this.isLogin = false;
       if (data.result == 1) {
         await this.$cookies.set(
           "seller-token",
@@ -217,3 +234,17 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.become-partner {
+  background-color: #ffb300;
+  border-color: #ffb300;
+  text-align: center;
+  color: white;
+  padding: 5px 15px;
+}
+.w-1rem {
+  width: 1rem;
+  height: 1rem;
+}
+</style>

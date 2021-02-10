@@ -1,12 +1,12 @@
 <template>
   <div class="d-flex align-items-center min-vh-100 login-container">
     <b-container>
-      <b-row class="justify-content-center px-5 py-4">
+      <b-row class="justify-content-center px-xl-5 py-4">
         <div class="w-100 px-xl-5 d-lg-flex header-login-box">
           <div
             class="logoLogin mr-lg-5"
             v-bind:style="{
-              'background-image': 'url(' + imgLogo + ')',
+              'background-image': 'url(' + imgLogo + ')'
             }"
           ></div>
           <h1
@@ -26,60 +26,48 @@
             <div class="header-logo-box-sub"></div>
           </div>
         </div>
-        <b-col md="9" lg="6" class=" text-center">
-          <div v-html="data" class=""></div>
+        <b-col md="9" lg="6" class="text-center">
+          <div v-html="data" class="regisdata"></div>
         </b-col>
         <b-col md="9" lg="6" class="mt-4 mt-lg-0">
-          <!-- <div class="text-center my-3">
-            <div
-              class="imgLogo"
-              v-bind:style="{
-                'background-image': 'url(' + imgLogo + ')',
-              }"
-            ></div>
-            <h1 class="header-login font-weight-bold text-uppercase f-20">
-              Partner Center
-            </h1>
-          </div> -->
           <b-card-group>
             <b-card class="p-4 shadow-lg login-box">
               <b-card-body class="py-1 px-0">
                 <b-form>
-                  <div class="mb-4">
-                    <InputTextIcon
-                      class
-                      textFloat="Name"
-                      placeholder="Name"
-                      type="text"
-                      name="name"
-                      isRequired
-                      @onKeyup="submitFormOnInput"
-                      v-model="form.firstname"
-                      :isValidate="$v.form.firstname.$error"
-                      :v="$v.form.firstname"
-                    />
-                  </div>
+                  <b-row>
+                    <b-col md="6">
+                      <InputTextIcon
+                        class
+                        :textFloat="$t('name')"
+                        :placeholder="$t('name')"
+                        type="text"
+                        name="name"
+                        isRequired
+                        @onKeyup="submitFormOnInput"
+                        v-model="form.firstname"
+                        :isValidate="$v.form.firstname.$error"
+                        :v="$v.form.firstname"
+                    /></b-col>
+                    <b-col md="6" class="mt-3 mt-md-0">
+                      <InputTextIcon
+                        class
+                        :textFloat="$t('sellerLastname')"
+                        :placeholder="$t('sellerLastname')"
+                        type="text"
+                        name="lastname"
+                        isRequired
+                        @onKeyup="submitFormOnInput"
+                        v-model="form.lastname"
+                        :isValidate="$v.form.lastname.$error"
+                        :v="$v.form.lastname"
+                    /></b-col>
+                  </b-row>
 
-                  <div class="mb-4">
+                  <div class="my-4">
                     <InputTextIcon
                       class
-                      textFloat="Lastname"
-                      placeholder="Lastname"
-                      type="text"
-                      name="lastname"
-                      isRequired
-                      @onKeyup="submitFormOnInput"
-                      v-model="form.lastname"
-                      :isValidate="$v.form.lastname.$error"
-                      :v="$v.form.lastname"
-                    />
-                  </div>
-
-                  <div class="mb-4">
-                    <InputTextIcon
-                      class
-                      textFloat="Email address"
-                      placeholder="Email address"
+                      :textFloat="$t('email')"
+                      :placeholder="$t('email')"
                       type="email"
                       name="email"
                       isRequired
@@ -90,41 +78,94 @@
                     />
                   </div>
 
-                  <div class="mb-4">
-                    <InputTextIcon
-                      class
-                      textFloat="Password"
-                      placeholder="Password"
-                      type="password"
-                      name="pass"
-                      isRequired
-                      @onKeyup="submitFormOnInput"
-                      v-model="form.password"
-                      :isValidate="$v.form.password.$error"
-                      :v="$v.form.password"
-                    />
-                  </div>
+                  <b-row>
+                    <b-col md="6">
+                      <InputTextIcon
+                        class
+                        :textFloat="$t('password')"
+                        :placeholder="$t('password')"
+                        type="password"
+                        name="pass"
+                        isRequired
+                        @onKeyup="submitFormOnInput"
+                        v-model="form.password"
+                        :isValidate="$v.form.password.$error"
+                        :v="$v.form.password"
+                        isShowPassword
+                    /></b-col>
+                    <b-col md="6" class="mt-3 mt-md-0">
+                      <InputTextIcon
+                        class
+                        :textFloat="$t('conpassword')"
+                        :placeholder="$t('conpassword')"
+                        type="password"
+                        name="conpass"
+                        isRequired
+                        @onKeyup="submitFormOnInput"
+                        v-model="form.confirmPassword"
+                        :isValidate="$v.form.confirmPassword.$error"
+                        :v="$v.form.confirmPassword"
+                        isShowPassword
+                    /></b-col>
+                  </b-row>
+
+                  <b-row class="mt-4">
+                    <b-col md="6">
+                      <div class="mb-0 d-flex">
+                        <div class="w-75">
+                          <InputTextIcon
+                            class="w-100"
+                            :textFloat="$t('phoneNumber')"
+                            :placeholder="$t('phoneNumber')"
+                            type="text"
+                            name="phone"
+                            isRequired
+                            @onKeyup="submitFormOnInput"
+                            v-model="form.telephone"
+                            :isValidate="$v.form.telephone.$error"
+                            :v="$v.form.telephone"
+                            :maxLength="10"
+                            @onKeypress="isNumber($event)"
+                          />
+                        </div>
+                        <div class="mt-auto ml-auto">
+                          <b-button
+                            class="f-12 mt-auto ml-2 btn-yellow"
+                            variant="primary"
+                            @click="getOTP"
+                            :disabled="disableOTP"
+                            >{{ time }}</b-button
+                          >
+                        </div>
+                      </div>
+                      <span class="text-secondary f-12 m-0" v-if="code != ''">
+                        ( Ref. {{ code }} )</span
+                      ></b-col
+                    >
+                    <b-col md="6" class="mt-3 mt-md-0">
+                      <div class="mb-4">
+                        <InputTextIcon
+                          textFloat="OTP"
+                          placeholder="OTP"
+                          type="text"
+                          name="OTP"
+                          isRequired
+                          v-model="otp"
+                          :maxLength="6"
+                          @onKeypress="isNumber($event)"
+                        />
+                        <span class="text-secondary f-12">{{
+                          $t("receiveOtp")
+                        }}</span>
+                      </div></b-col
+                    >
+                  </b-row>
 
                   <div class="mb-4">
                     <InputTextIcon
                       class
-                      textFloat="Confirm password"
-                      placeholder="Confirm password"
-                      type="password"
-                      name="conpass"
-                      isRequired
-                      @onKeyup="submitFormOnInput"
-                      v-model="form.confirmPassword"
-                      :isValidate="$v.form.confirmPassword.$error"
-                      :v="$v.form.confirmPassword"
-                    />
-                  </div>
-
-                  <div class="mb-4">
-                    <InputTextIcon
-                      class
-                      textFloat="Display / Shop name"
-                      placeholder="Display / Shop name"
+                      :textFloat="$t('shopName')"
+                      :placeholder="$t('shopName')"
                       type="text"
                       name="shop"
                       isRequired
@@ -133,46 +174,6 @@
                       :isValidate="$v.form.displayName.$error"
                       :v="$v.form.displayName"
                     />
-                  </div>
-
-                  <div class="mb-4 d-flex">
-                    <InputTextIcon
-                      class="w-100"
-                      textFloat="Phone number"
-                      placeholder="Phone number"
-                      type="text"
-                      name="phone"
-                      isRequired
-                      @onKeyup="submitFormOnInput"
-                      v-model="form.telephone"
-                      :isValidate="$v.form.telephone.$error"
-                      :v="$v.form.telephone"
-                      :maxLength="10"
-                      @onKeypress="isNumber($event)"
-                    />
-                    <b-button
-                      class="nowrap ml-2"
-                      variant="primary"
-                      @click="getOTP"
-                      :disabled="disableOTP"
-                      >{{ time }}</b-button
-                    >
-                  </div>
-
-                  <div class="mb-4">
-                    <InputTextIcon
-                      textFloat="OTP"
-                      placeholder="OTP"
-                      type="text"
-                      name="OTP"
-                      isRequired
-                      v-model="otp"
-                      :maxLength="6"
-                      @onKeypress="isNumber($event)"
-                    />
-                    <span class="text-secondary"
-                      >You will recieve an OTP in 3 min.</span
-                    >
                   </div>
 
                   <b-row v-if="error != ''" class="m-2 text-center">
@@ -188,11 +189,18 @@
                       id="checkbox-1"
                       name="checkbox-1"
                       v-model="accept"
-                      ><span
-                        class="text-underline pointer"
-                        @click="$bvModal.show('alertModal')"
-                        >Accept Terms & Conditions</span
-                      >
+                      >{{ $t("iaccept") }}
+                      <router-link :to="'/termandcondition'" class="" target="_blank">
+                        <span class="text-underline pointer">{{
+                          $t("termandcon")
+                        }}</span>
+                      </router-link>
+                      {{ $t("and") }}
+                      <router-link :to="'/privacypolicy'" class="" target="_blank">
+                        <span class="text-underline pointer">{{
+                          $t("privacy")
+                        }}</span>
+                      </router-link>
                     </b-form-checkbox>
                   </div>
 
@@ -203,16 +211,16 @@
                         class="px-4 login-btn"
                         :disabled="!accept"
                         @click="checkForm"
-                        >Register</b-button
+                        >{{ $t("register") }}</b-button
                       >
                     </b-col>
                   </b-row>
 
                   <div class="mt-3 text-center">
                     <span class="f-12">
-                      Already have an account?
+                      {{ $t("alreadyHasAcc") }}?
                       <router-link :to="'/login'" class="">
-                        <span class="text-underline">Login</span>
+                        <span class="text-underline">{{ $t("login") }}</span>
                       </router-link>
                     </span>
                   </div>
@@ -221,6 +229,19 @@
             </b-card>
           </b-card-group>
         </b-col>
+        <div class="text-center mt-3">
+          <span
+            :class="['pointer', $language == 'th' ? 'menuactive' : '']"
+            @click="changeLanguage('th')"
+            >ไทย</span
+          >
+          |
+          <span
+            :class="['pointer', $language == 'en' ? 'menuactive' : '']"
+            @click="changeLanguage('en')"
+            >English</span
+          >
+        </div>
       </b-row>
     </b-container>
 
@@ -235,55 +256,9 @@
       centered
       body-class="p-4"
     >
-      <div class="modal-header border-0"></div>
+      <!-- <div class="modal-header border-0"></div> -->
       <div class="text-center">
-        <pre class="text-left termandcondition f-16">
-       <b>ข้อกำหนดและเงื่อนไขการใช้เว็บไซต์ Getfin Seller Center</b>
-
-<b>ข้อสำคัญ</b>
-
-เวอริเต้ ขอขอบพระคุณที่ท่านเข้าเยี่ยมชมเว็บไซต์ Getfin Seller Center (“เว็ปไซต์”) ขอท่านได้โปรดอ่านข้อกำหนดและเงื่อนไขฉบับนี้ (“ข้อกำหนดการใช้”) ก่อนการใช้งานเว็บไซต์ ซึ่งดำเนินการโดย บริษัท เกทฟิน จำกัด เลขที่ 75/57 ซ.สุขุมวิท19 (วัฒนา) ถ.สุขุมวิท แขวงคลองเตยเหนือ เขตวัฒนา กรุงเทพมหานคร ประเทศไทย 10110 (“บริษัทฯ”)
-
-โดยการใช้งานเว็บไซต์นี้ ท่านได้ยอมรับข้อกำหนดการใช้ ที่บริษัทฯเป็นผู้ให้บริการการเข้าใช้งานแก่ท่าน บริษัทฯอาจเปลี่ยนแปลงข้อกำหนดการใช้ฉบับนี้ได้เป็นครั้งคราว ดังนั้น ขอให้ท่านได้โปรดทำความเข้าใจข้อกำหนดการใช้ทุกครั้งที่มีการใช้งานเว็บไซต์นี้ ทั้งนี้ ท่านตกลงปฏิบัติตามการเปลี่ยนแปลงในข้อตกลงและผูกผันตนกับข้อกำหนดการใช้ทุกครั้งที่มีการเปลี่ยนแปลง หากเวลาใดก็ตาม ท่านไม่ประสงค์จะยอมรับในข้อกำหนดการใช้นี้ ท่านก็ไม่อาจจะใช้งานเว็บไซต์นี้ได้
-
-<b>การไม่รับประกันรับรอง</b>
-
-ขณะที่บริษัทฯได้ใช้ความมานะอุสาหะ ที่จะรวบรวมและนำเสนอข้อมูลที่ได้มาจากหลายแหล่งที่เชื่อถือได้เพื่อจะให้ข้อมูลที่ปรากฏบนเว็บไซต์ออกมาถูกต้องและสมบูรณ์ แต่บริษัทฯไม่สามารถรับประกัน หรือ รับรองว่า ข้อมูล หรือ เนื้อหาทุกอย่างที่ปรากฎบนเว็บไซต์นั้นจะถูกต้อง ครบถ้วนสมบูรณ์ ท่านจะต้องใช้วิจารณญาณด้วยตนเอง
-
-<b>การเชื่อมโยงเว็บไซต์</b>
-
-การเชื่อมโยงไปยังเว็บไซต์อื่นเป็นเพียงการให้บริการเพื่ออำนวยความสะดวกแก่ท่านเท่านั้น บริษัทฯมิได้มีส่วนเกี่ยวข้องหรือมีอำนาจควบคุม รับรอง ความถูกต้อง ความน่าเชื่อถือ ตลอดจนความรับผิดชอบในเนื้อหาข้อมูลของเว็บไซต์นั้นๆ และ บริษัทฯ ไม่รับผิดชอบต่อเนื้อหาใดๆ ที่แสดงบนเว็บไซต์อื่นที่เชื่อมโยงมายังเว็บไซต์ของบริษัท หรือต่อความเสียหาย ใดๆ ที่เกิดขึ้นจากการเข้าเยี่ยมชมเว็บไซต์ดังกล่าว
-
-<b>ทรัพย์สินทางปัญญา</b>
-
-เว็บไซต์นี้ รวมถึง ข้อความ เนื้อหา ซอฟท์แวร์ วีดิโอ ดนตรี เสียง กราฟฟิก รูปภาพ งานแสดง งานศิลปะ ภาพวาด ชื่อ โลโก้ เครื่องหมายการค้า เครื่องหมายบริการ หรือวัสดุอื่นๆ และให้รวมถึง เนื้อหาที่บริษัทฯเป็นเจ้าของและเนื้อหาที่ควบคุมโดยบริษัทฯ ตลอดจนเนื้อหาที่เป็นเจ้าของ หรือ ถูกควบคุมโดยบุคคลที่สาม และได้รับอนุญาตจากบริษัทฯแล้ว ซึ่งเป็นทรัพย์สินทางปัญญาของบริษัทฯ และต่อไปจะเรียกว่า “เนื้อหา” ท่านไม่มีสิทธิกระทำการใด ๆ อันเป็นการละเมิดต่อเนื้อหา เว้นแต่ได้รับความยินยอมเป็น ลายลักษณ์อักษรจากบริษัทฯ เป็นการล่วงหน้า
-
-<b>การอนุญาตให้ดาวน์โหลด</b>
-
-ท่าน ไม่มีสิทธิดาวน์โหลด เนื้อหาในเว็บไซต์นี้ เว้นแต่จะได้รับอนุญาตเป็นลายลักษณ์อักษรจากบริษัทฯ
-
-<b>การไม่รับรอง</b>
-
-บริษัทฯ ไม่รับผิดชอบต่อความเสียหายใด ๆ ที่เกิดขึ้นกับท่านหรือบุคคลภายนอกไม่ว่าทางตรงหรือทางอ้อมต่อการใช้งานเว็บไซต์นี้ของท่าน
-
-<b>การเปลี่ยนแปลงเว็บไซต์</b>
-
-บริษัทฯ มีสิทธิในการระงับการเผยแพร่ เปลี่ยนแปลง แก้ไข ยกเลิกหรือปรับปรุงเนื้อหาเมื่อใดก็ได้โดยไม่จำต้องแจ้งให้ทราบล่วงหน้า
-
-<b>ความชดใช้สินไหมทดแทน</b>
-
-หากบริษัทฯ ได้รับความเสียหายใดๆ อันเนื่องมาจากการใช้งานเว็บไซต์ของท่านที่ไม่เป็นไปตามข้อกำหนดและเงื่อนไขการใช้เว็บไซต์นี้ ท่านตกลงยินยอมชดใช้ค่าเสียหายใด ๆ ให้แก่บริษัทฯ
-
-<b>นโยบายการคุ้มครองข้อมูลส่วนบุคคล</b>
-
-รายละเอียดเกี่ยวกับนโยบายการคุ้มครองข้อมูลส่วนบุคคลสำหรับท่าน โปรดศึกษาได้จากนโยบายคุ้มครองข้อมูลส่วนบุคคลของบริษัทฯ (Personal Data Protection Policy) ของบริษัทฯ
-
-<b>กฎหมายที่ใช้บังคับ</b>
-
-การตีความ และการบังคับตามเงื่อนไขการให้บริการฉบับนี้ ให้เป็นไปตามกฎหมายไทย
-
-ปรับปรุงล่าสุด วันที่ 24 กพ. 2563
-</pre>
+        <div v-html="dataModal" class="py-3"></div>
 
         <div>
           <b-button
@@ -307,23 +282,28 @@ import {
   minLength,
   sameAs,
   email,
+  helpers
 } from "vuelidate/lib/validators";
 import InputTextIcon from "@/components/inputs/InputTextIcon";
 import VueCookies from "vue-cookies";
 import ModalLoading from "@/components/modal/alert/ModalLoading";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
-
+const password = helpers.regex(
+  "password",
+  /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/
+);
 export default {
   name: "Register",
   components: {
     InputTextIcon,
     ModalLoading,
-    ModalAlertError,
+    ModalAlertError
   },
   data() {
     return {
       accept: false,
       error: "",
+      dataModal: "",
       imgLogo: "",
       otp: "",
       code: "",
@@ -331,6 +311,9 @@ export default {
       time: null,
       modalMessage: "",
       data: "",
+      termandcon: "",
+      privacypolicy: "",
+      setTimer: null,
       form: {
         email: "",
         password: "",
@@ -338,8 +321,8 @@ export default {
         telephone: "",
         displayName: "",
         firstname: "",
-        lastname: "",
-      },
+        lastname: ""
+      }
     };
   },
   validations() {
@@ -348,26 +331,39 @@ export default {
         email: { required, email },
         password: {
           required,
-          minLength: minLength(6),
+          password,
+          minLength: minLength(6)
         },
         confirmPassword: {
           required,
+          password,
           minLength: minLength(6),
-          sameAsPassword: sameAs("password"),
+          sameAsPassword: sameAs("password")
         },
         telephone: { required },
         displayName: { required },
         firstname: { required },
-        lastname: { required },
-      },
+        lastname: { required }
+      }
     };
   },
-  mounted: async function () {
-    await this.getLogo();
-    this.time = "Request OTP";
+  mounted: async function() {
+    this.time = this.$t("requestOtp");
+    await this.getData();
   },
   methods: {
-    isNumber: function (evt) {
+    changeLanguage(value) {
+      this.language = value;
+      this.$cookies.set(
+        "language",
+        value,
+        60 * 60 * 24 * 365,
+        "/",
+        this.$cookiesDomain
+      );
+      location.reload();
+    },
+    isNumber: function(evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
       if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -376,7 +372,7 @@ export default {
         return true;
       }
     },
-    getLogo: async function () {
+    getData: async function() {
       let resData = await this.$callApi(
         "get",
         `${this.$baseUrl}/api/setting/Logo`,
@@ -388,19 +384,43 @@ export default {
 
       let data = await this.$callApi(
         "get",
-        `${this.$baseUrl}/api/staticPage/Register`,
+        `${this.$baseUrl}/api/staticPage/terms-and-conditions-partner`,
         null,
         this.$headers,
         null
       );
-      this.data = data.detail;
+      this.termandcon = data.detail;
+
+      let dataPc = await this.$callApi(
+        "get",
+        `${this.$baseUrl}/api/staticPage/privacy-policy-partner`,
+        null,
+        this.$headers,
+        null
+      );
+      this.privacypolicy = dataPc.detail;
+
+      let dataRes = await this.$callApi(
+        "get",
+        `${this.$baseUrl}/api/staticPage/register`,
+        null,
+        this.$headers,
+        null
+      );
+      this.data = dataRes.detail;
     },
-    checkForm: async function () {
-      this.$v.form.$touch();
-      if (this.$v.form.$error) return;
+    showModal(type) {
+      if (type == 1) this.dataModal = this.termandcon;
+      else this.dataModal = this.privacypolicy;
+
+      this.$refs.alertModal.show();
+    },
+    checkForm: async function() {
+      //this.$v.form.$touch();
+      //if (this.$v.form.$error) return;
 
       if (this.otp == "") {
-        this.modalMessage = "Invalid OTP. Please enter valid OTP";
+        this.modalMessage = this.$t("otpError");
         this.$refs.modalAlertError.show();
         return;
       } else {
@@ -408,17 +428,19 @@ export default {
           telephone: this.form.telephone,
           OTP: this.otp,
           Reference: this.code,
-          type: 1,
+          type: 1
         };
+
+        this.setTimeCoundown(0);
 
         let otp = await this.$callApi(
           "post",
-          `https://dev-getfin-api.dosetech.co/api/OTP/Validate`,
+          `${this.$baseUrl}/api/OTP/Validate`,
           null,
           this.$headers,
           request
         );
-         this.modalMessage = otp.message;
+        this.modalMessage = otp.message;
         if (otp.result == 1) {
           this.$refs.modalLoading.show();
           this.error = "";
@@ -444,55 +466,66 @@ export default {
           } else {
             this.$refs.modalLoading.hide();
             this.error = data.detail[0];
+            this.time = clearInterval(setInterval(0, 1000));
+            this.disableOTP = false;
+            this.time = this.$t("requestOtp");
           }
-        }
-        else {
+        } else {
           this.$refs.modalAlertError.show();
         }
       }
     },
-    submitFormOnInput: function (e) {
+    submitFormOnInput: function(e) {
       if (e.keyCode === 13) {
         this.checkForm();
       }
     },
-    getOTP: async function () {
+    setTimeCoundown(time) {
+      this.disableOTP = true;
+
+      var timer = time,
+        minutes,
+        seconds;
+
+      if (time == 0) {
+        clearInterval(this.setTimer);
+        this.disableOTP = false;
+        this.time = "Request OTP";
+      } else {
+        this.setTimer = setInterval(() => {
+          minutes = parseInt(timer / 60, 10);
+          seconds = parseInt(timer % 60, 10);
+
+          minutes = minutes < 10 ? "0" + minutes : minutes;
+          seconds = seconds < 10 ? "0" + seconds : seconds;
+
+          this.time = minutes + ":" + seconds;
+
+          if (--timer < 0) {
+            clearInterval(x);
+            this.disableOTP = false;
+            this.time = "Request OTP";
+          }
+        }, 1000);
+      }
+    },
+    getOTP: async function() {
       if (this.form.telephone == "") {
-        this.modalMessage = "Please enter your telephone number";
+        this.modalMessage = this.$t("telError");
         this.$refs.modalAlertError.show();
         return;
       }
 
       let request = {
         telephone: this.form.telephone,
-        type: 1,
+        type: 1
       };
 
-      this.disableOTP = true;
-
-      var timer = 180,
-        minutes,
-        seconds;
-
-      var x = setInterval(() => {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        this.time = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-          clearInterval(x);
-          this.disableOTP = false;
-          this.time = "Request OTP";
-        }
-      }, 1000);
+      this.setTimeCoundown(180);
 
       let data = await this.$callApi(
         "post",
-        `https://dev-getfin-api.dosetech.co/api/OTP/Send`,
+        `${this.$baseUrl}/api/OTP/Send`,
         null,
         this.$headers,
         request
@@ -500,12 +533,15 @@ export default {
       if (data.result == 1) {
         this.code = data.detail.reference;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
+.w-75 {
+  width: 75%;
+}
 .termandcondition {
   white-space: pre-line;
   font-family: "Kanit-Regular" !important;
@@ -513,7 +549,17 @@ export default {
 }
 
 ::v-deep img {
-    max-width: 100% !important;
-    height: auto;
+  max-width: 100% !important;
+  height: auto;
+}
+
+.btn-yellow {
+  background: #ffb300;
+  border-color: #ffb300;
+}
+
+.regisdata {
+  overflow: auto;
+  max-height: 650px;
 }
 </style>

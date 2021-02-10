@@ -33,6 +33,7 @@ import {
 import {
     cilArrowRight,
     cilBan,
+    cilBarChart,
     cilBasket,
     cilBell,
     cilBank,
@@ -80,13 +81,14 @@ import {
     cilUserFemale,
     cilUserFollow,
     cilXCircle,
-    cilGift
+    cilGift,
 
 } from '@coreui/icons'
 
 export const iconsSet = Object.assign({}, {
     cilArrowRight,
     cilBan,
+    cilBarChart,
     cilBasket,
     cilBell,
     cilBank,
@@ -134,7 +136,7 @@ export const iconsSet = Object.assign({}, {
     cilUserFemale,
     cilUserFollow,
     cilXCircle,
-    cilGift
+    cilGift,
 }, {
     cifUs,
     cifBr,

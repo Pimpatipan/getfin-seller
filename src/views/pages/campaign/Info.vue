@@ -12,7 +12,7 @@
           <div v-if="campaign.status" class="campaign-status mt-3">
             {{ campaign.status }}
           </div>
-          <div v-else class="campaign-status mt-3">-</div>
+          <div v-else class="campaign-status mt-3">{{ $t("notJoin") }}</div>
         </b-col>
         <b-col md="4" class="text-center text-md-right mb-2 mb-sm-0">
           <TimeCounter :endDate="campaign.endDateJoinCampaign" />
@@ -88,11 +88,19 @@
         <div class="text-center mt-5">
           <router-link :to="'/campaign/details/' + id">
             <button
+              v-if="!campaign.status"
               :disabled="isDisable"
               type="button"
               class="btn btn-details-set btn-primary ml-md-2 text-uppercase"
             >
               {{ $t("joinNow") }}
+            </button>
+            <button
+              v-else
+              type="button"
+              class="btn btn-details-set btn-primary ml-md-2 text-uppercase"
+            >
+              {{ $t("details") }}
             </button>
           </router-link>
           <p class="text-secondary mt-2">
@@ -137,6 +145,7 @@ export default {
       form: {},
       notibuyer: false,
       isDisable: false,
+
       error: false,
       modalMessage: "",
       reply: "",
@@ -207,8 +216,9 @@ export default {
         // this.timeLeft = days + "วัน " + hours + " : " + minutes + " : " + seconds + "";
 
         if (distance < 0) {
-          clearInterval(x);
+          clearInterval();
           this.timeLeft = "EXPIRED";
+          this.isDisable = true;
         }
       }, 1000);
     },
@@ -244,10 +254,6 @@ export default {
   max-width: 100%;
   overflow-x: hidden;
   text-overflow: ellipsis;
-}
-
-.menuactive {
-  color: #ffb300 !important;
 }
 
 .campaign-name {

@@ -2,13 +2,13 @@
   <div>
     <div class="min-vh-100 container-box">
       <CRow class="no-gutters px-3 px-sm-0">
-        <b-col lg="6" class="text-center text-sm-left my-3 my-lg-0">
+        <b-col xl="4" class="text-center text-sm-left mb-3 mb-xl-0 mt-3 mt-sm-0">
           <h1 class="mr-sm-4 header-main text-uppercase mb-0">
             {{ $t("product") }}
           </h1>
         </b-col>
-        <b-col lg="6" class="text-right">
-          <div class="d-flex">
+        <b-col xl="8" class="text-right">
+          <div class="d-flex justify-content-end">
             <b-input-group class="panel-input-serach">
               <b-form-input
                 class="input-serach"
@@ -380,6 +380,9 @@ export default {
       this.modalMessage = resData.message;
       if (resData.result == 1) {
         this.$refs.modalAlert.show();
+        setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.filter.Page = 1;
         await this.getList();
       } else {
@@ -391,10 +394,6 @@ export default {
 </script>
 
 <style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-
 .outofstock {
   background: red;
   padding: 1px 5px;

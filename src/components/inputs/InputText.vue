@@ -2,7 +2,7 @@
   <div :class="['div-input', className]">
     <div class="display-only" v-if="isDisplay"></div>
     <div :class="['input-custom', { error: isValidate }]">
-      <label>
+      <label v-if="textFloat != ''">
         {{ textFloat }}
         <span v-if="isRequired" class="text-danger">*</span>
       </label>
@@ -35,6 +35,15 @@
       <span class="text-error" v-else-if="v.validateGP == false"
         >{{ $t("minValueError") }} 0
       </span>
+      <span class="text-error" v-else-if="v.validateSalestock == false"
+        >{{ $t("minValueError") }} {{ minValidate }}
+      </span>
+      <span class="text-error" v-else-if="v.validateMinvalue == false"
+        >{{ $t("minValueError") }} 0
+      </span>
+      <span class="text-error" v-else-if="v.validatePrice == false"
+        >{{ $t("noMoreThanPrice") }} {{ minValidate }} %
+      </span>
       <span class="text-error" v-else-if="v.email == false"
         >{{ $t("emailError") }}.</span
       >
@@ -47,12 +56,14 @@
       <span class="text-error" v-else-if="v.decimal == false"
         >{{ $t("numOnly") }}.
       </span>
-
       <span class="text-error" v-else-if="v.minValue == false"
         >{{ $t("minValueError") }} {{ v.$params.minValue.min }}.
       </span>
-      <span class="text-error d" v-if="v.sameAsPassword == false"
+      <span class="text-error" v-if="v.sameAsPassword == false"
         >{{ $t("passNotMatch") }}.
+      </span>
+      <span class="text-error" v-else-if="v.password == false">
+        {{ $t("textValidatePassword") }}
       </span>
     </div>
   </div>
@@ -63,74 +74,78 @@ export default {
   props: {
     textFloat: {
       required: true,
-      type: String,
+      type: String
     },
     placeholder: {
       required: true,
-      type: String,
+      type: String
     },
     type: {
       required: true,
-      type: String,
+      type: String
     },
     required: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     detail: {
       required: false,
-      type: String,
+      type: String
     },
     size: {
       required: false,
-      type: String,
+      type: String
     },
     name: {
       required: false,
-      type: String,
+      type: String
     },
     value: {
       required: false,
-      type: String | Number,
+      type: String | Number
     },
     isDisplay: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     isRequired: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     isValidate: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     v: {
       required: false,
-      type: Object,
+      type: Object
     },
     className: {
       required: false,
-      type: String,
+      type: String
     },
     img: {
       required: false,
-      type: String,
+      type: String
     },
     disabled: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     maxLength: {
       required: false,
-      type: Number,
+      type: Number
     },
+    minValidate: {
+      required: false,
+      type: Number
+    }
   },
   methods: {
     onDataChange(event) {
       this.$emit("onDataChange", event.target.value);
-    },
-  },
+    }
+  }
 };
 </script>
 

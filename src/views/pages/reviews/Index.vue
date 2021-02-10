@@ -2,13 +2,13 @@
   <div>
     <div class="min-vh-100 container-box">
       <CRow class="no-gutters px-3 px-sm-0">
-        <b-col sm="4" class="text-center text-sm-left my-3 my-lg-0">
+        <b-col xl="4" class="text-center text-sm-left my-3 my-md-0">
           <h1 class="mr-sm-4 header-main text-uppercase">
             {{ $t("reviewList") }}
           </h1>
         </b-col>
-        <b-col sm="8" class="text-right">
-          <div class="d-flex">
+        <b-col xl="8" class="text-right">
+          <div class="d-flex justify-content-end">
             <b-input-group class="panel-input-serach">
               <b-form-input
                 class="input-serach"
@@ -29,8 +29,7 @@
                 title="filter-btn"
                 class="text-white mr-0 mr-sm-1"
               />
-              <span
-                class="d-none d-sm-inline font-weight-bold text-uppercase"
+              <span class="d-none d-sm-inline font-weight-bold text-uppercase"
                 >{{ $t("filter") }} ({{ countStartdate + countEnddate }})</span
               >
             </b-button>
@@ -39,7 +38,7 @@
       </CRow>
       <b-sidebar
         id="sidebar-1"
-        title="FILTER"
+        :title="$t('filter')"
         backdrop
         shadow
         backdrop-variant="dark"
@@ -136,7 +135,7 @@
                         SKU: {{ data.item.sku }}
                       </p>
                       <p class="m-0 three-lines">
-                        {{ data.item.shortDescription }}
+                        {{ data.item.productName }}
                       </p>
                     </div>
                   </div>
@@ -395,10 +394,6 @@ export default {
 </script>
 
 <style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-
 .review-shortdesc {
   position: absolute;
   top: 50%;

@@ -80,12 +80,13 @@
 
         <b-row class="mt-4 no-gutters">
           <b-col md="4">
-            <b-button
-              href="/question"
-              :disabled="isDisable"
-              class="btn-details-set btn-secondary"
-              >{{ $t("cancel") }}</b-button
-            >
+            <router-link to="/question">
+              <b-button
+                :disabled="isDisable"
+                class="btn-details-set btn-secondary"
+                >{{ $t("cancel") }}</b-button
+              >
+            </router-link>
           </b-col>
           <b-col md="8" class="text-sm-right">
             <b-form-checkbox
@@ -189,11 +190,11 @@ export default {
       this.modalMessage = data.message;
       this.$refs.modalLoading.hide();
       this.isDisable = false;
-
+      this.$store.dispatch("getActiveData");
       if (data.result == 1) {
         this.$refs.modalAlert.show();
-        setTimeout(function () {
-          window.location.href = "/question";
+        setTimeout(() => {
+          this.$router.push({ path: `/question` });
         }, 3000);
       } else {
         this.$refs.modalAlertError.show();

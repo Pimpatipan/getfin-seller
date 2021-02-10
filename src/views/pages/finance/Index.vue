@@ -89,8 +89,3 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-</style>

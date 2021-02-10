@@ -58,12 +58,12 @@
           }}</span>
         </div>
       </div>
-      <div class="col-lg-1 p-0 text-right text-lg-left">
+      <div class="col-2 col-lg-1 p-0 text-right text-lg-left">
         <b-button
           type="button"
           col="4"
           md="4"
-          class="btn-download"
+          class="btn-download w-100"
           :disabled="isDisable"
           variant="link"
           @click.prevent="downloadItem(fileName)"
@@ -364,7 +364,7 @@ input[size="lg"].custom-input {
   border-radius: 10px;
 }
 .btn-main {
-  width: 120px;
+  min-width: 90px !important;
   text-align: center;
   height: 38px;
   vertical-align: middle;

@@ -160,7 +160,7 @@
         </b-col>
       </b-row>
       <b-row class="bg-white p-3 no-gutters">
-        <b-col>
+        <b-col v-if="dataWarningLog[5].warningLog.note != ''">
           <label class="font-weight-bold">{{ $t("noteFromAdmin") }}</label>
           <p>{{ dataWarningLog[5].warningLog.note }}</p>
         </b-col>
@@ -184,6 +184,7 @@
       </b-row>
       <ModalAlert ref="modalAlert" :text="modalMessage" />
       <ModalAlertError ref="modalAlertError" :text="modalMessage" />
+      <ModalLoading ref="modalLoading" :hasClose="false" />
     </b-container>
   </div>
 </template>
@@ -191,10 +192,12 @@
 <script>
 import ModalAlert from "@/components/modal/alert/ModalAlert";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
+import ModalLoading from "@/components/modal/alert/ModalLoading";
 export default {
   components: {
     ModalAlert,
     ModalAlertError,
+    ModalLoading,
   },
   props: {
     sellerUser: {
@@ -209,7 +212,7 @@ export default {
   data() {
     return {
       modalMessage: "",
-      isDisable: false,
+      isDisable: true,
       filter: {
         search: "",
         PerPage: 9,
@@ -239,6 +242,11 @@ export default {
   },
   async created() {
     await this.getData();
+  },
+  watch: {
+    subsidize: function () {
+      this.isDisable = false;
+    },
   },
 
   methods: {
@@ -284,16 +292,19 @@ export default {
       });
 
       await this.getShippingList();
+      this.isDisable = true;
     },
     addShippingToMyList(item, index) {
       this.myShippingLists.push(item);
       this.myShippingIdLists.push(item.id);
       this.shippingLists.splice(index, 1);
+      this.isDisable = false;
     },
     removeFromMyShippingList(item, index) {
       this.shippingLists.push(item);
       this.myShippingLists.splice(index, 1);
       this.myShippingIdLists.splice(index, 1);
+      this.isDisable = false;
     },
     handleSearch(e) {
       if (e.keyCode === 13) {
@@ -323,6 +334,7 @@ export default {
         this.isDisable = false;
         return;
       }
+      this.$refs.modalLoading.show();
 
       let data = await this.$callApi(
         "patch",
@@ -334,15 +346,19 @@ export default {
           SubsidizeId: this.subsidize,
         }
       );
-
+      this.$refs.modalLoading.hide();
       this.modalMessage = data.message;
       this.isDisable = false;
       if (data.result == 1) {
+        this.myShippingIdLists = [];
+        this.filter.NotInId = [];
         this.$refs.modalAlert.show();
+        this.isDisable = true;
         this.getData();
-        // setTimeout(function () {
-        //   window.location.reload();
-        // }, 3000);
+
+       setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.$hasChange = false;
       } else {
         this.$refs.modalAlertError.show();
@@ -368,7 +384,7 @@ export default {
 }
 .shipping-panel-overflow {
   overflow-x: auto;
-  height: calc(100vh - 470px);
+  height: calc(100vh - 570px);
 }
 .panel-shipping-serach {
   border: 2px solid #16274a;

@@ -8,7 +8,7 @@
           </h1>
         </b-col>
         <b-col xl="6" class="text-right">
-          <div class="d-flex">
+          <div class="d-flex justify-content-end">
             <b-input-group class="panel-input-serach">
               <b-form-input
                 class="input-serach"
@@ -140,7 +140,16 @@
                   <p class="font-weight-bold mb-1">
                     {{ data.item.customerDetail.firstname }}
                     {{ data.item.customerDetail.lastname }}
+                    <span>
+                      <font-awesome-icon
+                        icon="comment"
+                        title="chat"
+                        class="pointer text-warning"
+                        @click="directToChat(data.item)"
+                      ></font-awesome-icon>
+                    </span>
                   </p>
+
                   <p class="m-0">{{ data.item.customerDetail.email }}</p>
                   <p class="m-0">{{ data.item.customerDetail.telephone }}</p>
                 </div>
@@ -149,20 +158,31 @@
                 <span>
                   {{
                     new Date(data.item.dateTimePurchase)
-                      | moment("DD MMM YYYY (HH:MM)")
+                      | moment($formatDateTime)
                   }}
                 </span>
               </template>
               <template v-slot:cell(dateTimeReturn)="data">
                 <span>
                   {{
-                    new Date(data.item.dateTimeReturn)
-                      | moment("DD MMM YYYY (HH:MM)")
+                    new Date(data.item.dateTimeReturn) | moment($formatDateTime)
                   }}
                 </span>
               </template>
               <template v-slot:cell(orderStatus)="data">
                 <div v-if="data.item.returnStatusId == 4" class="text-success">
+                  {{ data.item.orderStatus }}
+                </div>
+                <div
+                  v-else-if="data.item.returnStatusId == 3"
+                  class="text-danger"
+                >
+                  {{ data.item.orderStatus }}
+                </div>
+                <div
+                  v-else-if="data.item.returnStatusId == 2"
+                  class="text-info"
+                >
                   {{ data.item.orderStatus }}
                 </div>
                 <div v-else class="text-warning">
@@ -173,7 +193,7 @@
                 <div class="d-flex justify-content-center">
                   <b-button variant="link" class="px-1 py-0">
                     <router-link :to="'/return/details/' + data.item.orderId">
-                      {{ $t("check") }}
+                      {{ $t("details") }}
                     </router-link>
                   </b-button>
                 </div>
@@ -307,6 +327,21 @@ export default {
     this.$isLoading = true;
   },
   methods: {
+    directToChat(data) {
+      let buyerdata = {
+        chatId: data.chatId,
+        firstname: data.customerDetail.firstname,
+        lastname: data.customerDetail.lastname,
+        email: data.customerDetail.email,
+        photoUrl: data.imageUrl,
+      };
+      this.$store.commit("setOtherProfile", buyerdata);
+      setTimeout(() => {
+        this.$router.push({
+          path: "/chat",
+        });
+      }, 500);
+    },
     getStatusList: async function () {
       let status = await this.$callApi(
         "get",
@@ -393,13 +428,9 @@ export default {
     },
   },
 };
-</script>       
+</script>
 
 <style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-
 .review-shortdesc {
   position: absolute;
   top: 50%;

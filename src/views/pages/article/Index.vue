@@ -2,13 +2,13 @@
   <div>
     <div class="min-vh-100 container-box">
       <CRow class="no-gutters px-3 px-sm-0">
-        <b-col sm="6" class="text-center text-sm-left my-3 my-lg-0">
+        <b-col xl="4" class="text-center text-sm-left my-3 my-lg-0">
           <h1 class="mr-sm-4 header-main text-uppercase">
             {{ $t("article") }}
           </h1>
         </b-col>
-        <b-col sm="6" class="text-right">
-          <div class="d-flex">
+        <b-col xl="8" class="text-right">
+          <div class="d-flex justify-content-end">
             <b-input-group class="panel-input-serach">
               <b-form-input
                 class="input-serach"
@@ -67,7 +67,7 @@
             >
               <template v-slot:cell(imageUrl)="data">
                 <div
-                  class="image"
+                  class="image ratio-4-3-pt b-contain"
                   v-bind:style="{
                     'background-image': 'url(' + data.item.imageUrl + ')'
                   }"
@@ -83,6 +83,10 @@
                   {{ $t("display") }}
                 </div>
                 <div v-else class="text-danger">{{ $t("notdisplay") }}</div>
+              </template>
+              <template v-slot:cell(sortOrder)="data">
+                <div v-if="data.item.sortOrder == 0">-</div>
+                <div v-else>{{ data.item.sortOrder }}</div>
               </template>
               <template v-slot:cell(shortDescription)="data">
                 <p class="m-0 three-lines">
@@ -176,7 +180,7 @@ export default {
         {
           key: "imageUrl",
           label: `${this.$t("thumbnail")}`,
-          class: "w-200"
+          class: "w-100px"
         },
         {
           key: "name",
@@ -191,7 +195,7 @@ export default {
         {
           key: "sortOrder",
           label: `${this.$t("sortOrder")}`,
-          class: "w-50px"
+          class: "w-100px"
         },
         {
           key: "updatedTime",
@@ -298,6 +302,9 @@ export default {
       if (resData.result == 1) {
         this.$refs.modalAlert.show();
         this.filter.Page = 1;
+        setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         await this.getList();
       } else {
         this.$refs.modalAlertError.show();

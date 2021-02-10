@@ -34,7 +34,7 @@
                 <div
                   class="image"
                   v-bind:style="{
-                    'background-image': 'url(' + data.item.imageUrl + ')'
+                    'background-image': 'url(' + data.item.imageUrl + ')',
                   }"
                 ></div>
               </template>
@@ -56,6 +56,7 @@
                   type="text"
                   name="campaignPrice"
                   isRequired
+                  :minValidate="data.item.percentDiscount"
                   :isValidate="
                     $v.items.$each.$iter[data.index].campaignPrice.$error
                   "
@@ -71,6 +72,7 @@
                   type="text"
                   name="stockToBuy"
                   isRequired
+                  :minValidate="data.item.minSale"
                   :isValidate="
                     $v.items.$each.$iter[data.index].saleStock.$error
                   "
@@ -105,6 +107,7 @@
           >
             <div class="d-sm-flex m-3">
               <b-pagination
+                v-if="forceRefresh"
                 v-model="filter.PageNo"
                 :total-rows="rows"
                 :per-page="filter.PerPage"
@@ -133,7 +136,7 @@
             <router-link :to="'/campaign'">
               <button
                 type="button"
-                class="btn  btn-main btn-details-set  ml-md-2 text-uppercase"
+                class="btn btn-main btn-details-set ml-md-2 text-uppercase"
               >
                 {{ $t("cancel") }}
               </button>
@@ -144,7 +147,7 @@
               :disabled="isDisable"
               @click="checkForm(0)"
               type="button"
-              class="btn btn-main btn-details-set  ml-md-2 text-uppercase"
+              class="btn btn-main btn-details-set ml-md-2 text-uppercase"
             >
               {{ $t("save") }}
             </button>
@@ -152,7 +155,7 @@
               :disabled="isDisable"
               @click="checkForm(1)"
               type="button"
-              class="btn btn-main btn-details-set  ml-md-2 text-uppercase"
+              class="btn btn-main btn-details-set ml-md-2 text-uppercase"
             >
               {{ $t("saveAndExit") }}
             </button>
@@ -172,14 +175,38 @@ import ModalAlertError from "@/components/modal/alert/ModalAlertError";
 import ModalLoading from "@/components/modal/alert/ModalLoading";
 
 import InputText from "@/components/inputs/InputText";
-import { required } from "vuelidate/lib/validators";
+import { required, maxLength, minLength } from "vuelidate/lib/validators";
+
+const validatePrice = (value, maxPrice) => {
+  if (value > maxPrice) {
+    return false;
+  } else {
+    return true;
+  }
+};
+const validateSalestock = (value, minsale) => {
+  if (value < minsale) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const validateMinvalue = (value) => {
+  if (value == 0) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 export default {
   name: "QuestionIndex",
   components: {
     ModalAlert,
     ModalAlertError,
     ModalLoading,
-    InputText
+    InputText,
   },
   data() {
     return {
@@ -189,8 +216,12 @@ export default {
       activeItem: "",
       campaign: {},
       requestDeleteUser: {
-        userId: null
+        userId: null,
       },
+      minSale: 0,
+      percentDiscount: 0,
+      forceRefresh: true,
+      allItem: [],
       selected: [],
       isDisable: false,
       selectedAll: false,
@@ -198,61 +229,61 @@ export default {
       selectAllCb: false,
       form: {
         Id: this.$route.params.id,
-        Product: []
+        Product: [],
       },
       fields: [
         {
           key: "imageUrl",
           label: `${this.$t("thumbnail")}`,
-          class: "w-200"
+          class: "w-200",
         },
         {
           key: "name",
           label: `${this.$t("productName")}`,
-          class: "w-100px"
+          class: "w-100px",
         },
         {
           key: "sku",
           label: `SKU`,
-          class: "w-100px"
+          class: "w-100px",
         },
         {
           key: "categoryName",
           label: `${this.$t("category")}`,
-          class: "w-100px"
+          class: "w-100px",
         },
 
         {
           key: "imageUrl",
           label: `${this.$t("category")}`,
-          class: "w-100px"
+          class: "w-100px",
         },
         {
           key: "price",
           label: `${this.$t("currentPrice")}`,
           class: "w-100px",
-          tdClass: "text-left"
+          tdClass: "text-left",
         },
 
         {
           key: "campaignPrice",
           label: `${this.$t("campaignPrice")}`,
-          class: "w-100px"
+          class: "w-100px",
         },
         {
           key: "stock",
           label: `${this.$t("stock")}`,
-          class: "w-100px"
+          class: "w-100px",
         },
         {
           key: "saleStock",
           label: `${this.$t("stockToBuy")}`,
-          class: "w-100px"
+          class: "w-100px",
         },
         {
           key: "id",
-          label: ""
-        }
+          label: "",
+        },
       ],
       items: [],
       isBusy: false,
@@ -263,49 +294,56 @@ export default {
         StartDate: null,
         EndDate: null,
         Status: [],
-        Search: ""
+        Search: "",
+        deletedProduct: [],
       },
       pageOptions: [
         { value: 10, text: `10 / ${this.$t("page")}` },
         { value: 30, text: `30 / ${this.$t("page")}` },
         { value: 50, text: `50 / ${this.$t("page")}` },
-        { value: 100, text: `100 / ${this.$t("page")}` }
+        { value: 100, text: `100 / ${this.$t("page")}` },
       ],
-      totalRowMessage: ""
+      totalRowMessage: "",
     };
   },
   validations: {
     items: {
       $each: {
-        campaignPrice: { required },
-        saleStock: { required }
-      }
-    }
-
-    // article: {
-    //   sortOrder: { required },
-    //   urlKey: { required },
-    //   imageUrl: { required },
-    //   translationList: {
-    //     $each: {
-    //       name: { required },
-    //       shortDescription: { required },
-    //       description: { required },
-    //       metaTitle: { required },
-    //       metaKeyword: { required },
-    //       metaDescription: { required },
-    //     },
-    //   },
-    // },
+        campaignPrice: {
+          required,
+          validatePrice: function (campaignPrice, campaign) {
+            let priceDiscount =
+              (campaign.price * campaign.percentDiscount) / 100;
+            let maxPrice = campaign.price - priceDiscount;
+            return validatePrice(campaignPrice, maxPrice);
+          },
+          maxLength: maxLength(10),
+          validateMinvalue: function (value) {
+            return validateMinvalue(value);
+          },
+        },
+        saleStock: {
+          required,
+          validateSalestock: function (value, campaign) {
+            return validateSalestock(value, campaign.minSale);
+          },
+          validateMinvalue: function (value) {
+            return validateMinvalue(value);
+          },
+          maxLength: maxLength(10),
+        },
+      },
+    },
   },
-  created: async function() {
+  created: async function () {
     await this.getList();
+    await this.getAllList();
     await this.getCampaignDetail();
     this.$isLoading = true;
   },
   computed: {},
   methods: {
-    isNumber: function(evt) {
+    isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
       if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -314,13 +352,13 @@ export default {
         return true;
       }
     },
-    category: async function(val) {
+    category: async function (val) {
       let text = "";
 
       text = val.join(" > ");
       return text;
     },
-    getList: async function() {
+    getList: async function () {
       this.isBusy = true;
 
       let resData = await this.$callApi(
@@ -333,13 +371,44 @@ export default {
       if (resData.result == 1) {
         this.items = resData.detail.dataList;
         this.rows = resData.detail.count;
+        if (resData.detail.dataList.length > 0) {
+          this.minSale = resData.detail.dataList[0].minSale;
+          this.percentDiscount = resData.detail.dataList[0].percentDiscount;
+        } else {
+          this.isDisable = true;
+        }
+
         //this.statusList = resData.detail.overviewCount;
         this.$isLoading = true;
 
         this.isBusy = false;
       }
     },
-    getCampaignDetail: async function() {
+    getAllList: async function () {
+      // get ข้อมูลทั้งหมดมาใช้ตอนเช็คติ้ก
+
+      let filterAll = {
+        PageNo: 1,
+        PerPage: -1,
+        StartDate: null,
+        EndDate: null,
+        Status: [],
+        Search: "",
+        deletedProduct: [],
+      };
+
+      let resData = await this.$callApi(
+        "post",
+        `${this.$baseUrl}/api/Campaign/product/${this.id}`,
+        null,
+        this.$headers,
+        filterAll
+      );
+      if (resData.result == 1) {
+        this.allItem = resData.detail.dataList;
+      }
+    },
+    getCampaignDetail: async function () {
       let data = await this.$callApi(
         "get",
         `${this.$baseUrl}/api/Campaign/${this.$route.params.id}`,
@@ -352,24 +421,34 @@ export default {
         this.campaign = data.detail;
       }
     },
-    checkForm: async function(flag) {
-      this.items.forEach(element => {
-        this.form.Product.push({
-          id: element.id,
-          campaignPrice: element.campaignPrice,
-          saleStock: element.saleStock
+    handleForcefresh() {
+      this.forceRefresh = false;
+      this.$nextTick(() => {
+        this.forceRefresh = true;
+      });
+    },
+    checkForm: async function (flag) {
+      this.allItem.forEach((item) => {
+        this.items.forEach((itemPerpage) => {
+          if (item.id === itemPerpage.id) {
+            item.campaignPrice = itemPerpage.campaignPrice;
+            item.saleStock = itemPerpage.saleStock;
+          }
         });
       });
+
+      this.form.Product = this.allItem;
       this.$v.items.$touch();
       if (this.$v.items.$error) {
         return;
       }
+
       this.modalAlertShow = false;
       //this.flag = flag;
       this.$refs.modalLoading.show();
       this.submit(flag);
     },
-    submit: async function(flag) {
+    submit: async function (flag) {
       this.isDisable = true;
 
       let data = await this.$callApi(
@@ -388,13 +467,17 @@ export default {
         this.$refs.modalAlert.show();
 
         if (flag == 0) {
+          setTimeout(() => {
+            this.$refs.modalAlert.hide();
+          }, 3000);
+
           this.filter.Product = [];
           this.selected = [];
           this.getList();
         } else {
           setTimeout(() => {
             this.$router.push({
-              path: `/campaign`
+              path: `/campaign`,
             });
           }, 3000);
         }
@@ -407,10 +490,27 @@ export default {
       this.activeItem = status;
       this.getList();
     },
-    isActive: function(menuItem) {
+    isActive: function (menuItem) {
       return this.activeItem == menuItem;
     },
     pagination(Page) {
+      this.$v.items.$touch();
+      if (this.$v.items.$error) {
+        this.handleForcefresh();
+        return;
+      }
+
+      this.allItem.forEach((item) => {
+        this.items.forEach((itemPerpage) => {
+          if (item.id === itemPerpage.id) {
+            item.campaignPrice = itemPerpage.campaignPrice;
+            item.saleStock = itemPerpage.saleStock;
+          }
+        });
+      });
+
+      this.form.Product = this.allItem;
+
       this.filter.PageNo = Page;
       this.getList();
     },
@@ -436,19 +536,32 @@ export default {
     },
     deleteProduct(product) {
       const index = this.items.indexOf(product);
+      let allIndex = 0;
+      this.allItem.findIndex((el, index) => {
+        if (el.id == product.id) {
+          allIndex = index;
+        }
+      });
 
       if (index > -1) {
         this.items.splice(index, 1);
+        this.filter.deletedProduct.push(product.id);
       }
-    }
-  }
+
+      if (allIndex > -1) {
+        this.allItem.splice(allIndex, 1);
+      }
+      if (this.items.length == 0) {
+        this.filter.PageNo = 1;
+      }
+      this.getList();
+      this.getAllList();
+    },
+  },
 };
 </script>
 
 <style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
 .image {
   width: 100%;
   padding-top: 42.9%;

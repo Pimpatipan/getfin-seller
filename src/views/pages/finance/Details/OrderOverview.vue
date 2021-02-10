@@ -22,7 +22,9 @@
             class="text-white mr-0 mr-sm-1"
           />
           <span class="d-none d-sm-inline">
-            {{ $t("filter") }} ({{ countStartdate + countEnddate + countOrderNo}})</span
+            {{ $t("filter") }} ({{
+              countStartdate + countEnddate + countOrderNo
+            }})</span
           >
         </b-button>
       </b-col>
@@ -157,6 +159,11 @@
             <template v-slot:cell(shippingSeller)="data">
               <span>
                 ฿ {{ data.item.shippingSeller | numeral("0,0.00") }}
+              </span>
+            </template>
+               <template v-slot:cell(shippingPartner)="data">
+              <span>
+                ฿ {{ data.item.shippingPartner | numeral("0,0.00") }}
               </span>
             </template>
             <template v-slot:cell(startDate)="data">
@@ -372,6 +379,11 @@ export default {
           class: "w-100px",
         },
         {
+          key: "shippingPartner",
+          label: `${this.$t("shippingFee")} (${this.$t("paidByPartner")})`,
+          class: "w-200",
+        },
+        {
           key: "promotion",
           label: `${this.$t("promotion")}`,
           class: "w-100px",
@@ -558,9 +570,6 @@ export default {
 </script>
 
 <style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
 .status-count-label {
   font-size: 20px;
   color: #1085ff;

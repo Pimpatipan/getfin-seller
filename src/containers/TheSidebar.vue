@@ -39,7 +39,7 @@
           'background-image': 'url(' + img + ')',
         }"
       ></div>
-      <h4 class="font-weight-bold mt-2 username">{{ name }} {{ lastname }}</h4>
+      <h4 class="font-weight-bold mt-2 username">{{ name }}</h4>
 
       <b-row class="no-gutters py-3 user-btn mt-4">
         <b-col>
@@ -58,7 +58,10 @@
         </b-col>
       </b-row>
     </div>
+    <!-- <div> -->
+
     <CRenderFunction flat :contentToRender="sidebarItems" />
+    <!-- </div> -->
     <CSidebarMinimizer
       class="c-d-md-down-none"
       @click.native="$store.commit('toggle', 'sidebarMinimize')"
@@ -84,6 +87,7 @@ import { mapState } from "vuex";
 import ModalAlertConfirm from "@/components/modal/alert/ModalAlertConfirm";
 import VueCookies from "vue-cookies";
 import ModalLoading from "@/components/modal/alert/ModalLoading";
+import Vue from "vue";
 
 export default {
   name: "TheSidebar",
@@ -108,6 +112,12 @@ export default {
     ...mapState({
       minimize: (state) => state.sidebarMinimize,
     }),
+  },
+  props: {
+    forcerefresh: {
+      required: false,
+      type: Boolean,
+    },
   },
   mounted: async function () {
     this.name = VueCookies.get("username");
@@ -143,8 +153,10 @@ export default {
 
       if (resData.result == 1) {
         this.img = resData.detail.userDetail.seller.logo;
-        this.name = resData.detail.userDetail.firstname;
-        this.lastname = resData.detail.userDetail.lastname;
+        if (Vue.prototype.$language == "th")
+          this.name = resData.detail.userDetail.displayNameTranslation[0].name;
+        else
+          this.name = resData.detail.userDetail.displayNameTranslation[1].name;
 
         if (resData.detail.userDetail.seller.statusId == 2)
           this.$IsVerified = true;

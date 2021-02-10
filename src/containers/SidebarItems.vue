@@ -6,13 +6,44 @@ export default {
       sidebar: {
         _name: "CSidebarNav",
         _children: [
-          //  {
-          //   id: 1,
-          //   _name: "CSidebarNavItem",
-          //   name: `Dashboard`,
-          //   to: "/dashboard",
-          //   icon: "cil-settings",
-          // },
+          {
+            id: 1,
+            _name: "CSidebarNavDropdown",
+            name: `${this.$t("dashboard")}`,
+            icon: "cil-bar-chart",
+            items: [
+              {
+                _name: "CSidebarNavItem",
+                name: `${this.$t("dbProductOverview")}`,
+                to: "/dashboard/productoverview",
+                icon: "cil-bar-chart",
+              },
+              {
+                _name: "CSidebarNavItem",
+                name: `${this.$t("dbRevenueProduct")}`,
+                to: "/dashboard/revenueproduct",
+                icon: "cil-bar-chart",
+              },
+              {
+                _name: "CSidebarNavItem",
+                name: `${this.$t("dbPerformance")}`,
+                to: "/dashboard/performance",
+                icon: "cil-bar-chart",
+              },
+              {
+                _name: "CSidebarNavItem",
+                name: `${this.$t("dbCampaign")}`,
+                to: "/dashboard/campaign",
+                icon: "cil-bar-chart",
+              },
+              {
+                _name: "CSidebarNavItem",
+                name: `${this.$t("dbProductPerformance")}`,
+                to: "/dashboard/productperformance",
+                icon: "cil-bar-chart",
+              },
+            ],
+          },
           {
             id: 1,
             _name: "CSidebarNavItem",
@@ -23,22 +54,29 @@ export default {
           {
             id: 1,
             _name: "CSidebarNavItem",
-            name: `${this.$t("question")}`,
+            name: `${this.$t("question")} (${this.$store.state.menu.question})`,
             to: "/question",
             icon: "cil-comment-bubble",
           },
           {
             id: 1,
             _name: "CSidebarNavItem",
-            name: `${this.$t("review")}`,
+            name: `${this.$t("review")} (${this.$store.state.menu.review})`,
             to: "/review",
             icon: "cil-user",
           },
           {
             id: 1,
             _name: "CSidebarNavItem",
-            name: `${this.$t("order")}`,
+            name: `${this.$t("order")} (${this.$store.state.menu.order})`,
             to: "/order",
+            icon: "cil-clipboard",
+          },
+          {
+            id: 1,
+            _name: "CSidebarNavItem",
+            name: `${this.$t("resendOrder")}`,
+            to: "/resendorder",
             icon: "cil-clipboard",
           },
           // {
@@ -58,7 +96,7 @@ export default {
           {
             id: 1,
             _name: "CSidebarNavItem",
-            name: `${this.$t("return")}`,
+            name: `${this.$t("return")} (${this.$store.state.menu.returnOrder})`,
             to: "/return",
             icon: "cil-clipboard",
           },
@@ -69,7 +107,7 @@ export default {
             to: "/article",
             icon: "cil-clipboard",
           },
-      {
+          {
             id: 1,
             _name: "CSidebarNavItem",
             name: `${this.$t("campaignList")}`,
@@ -83,6 +121,40 @@ export default {
             to: "/chat",
             icon: "cil-speech",
           },
+          {
+            id: 1,
+            _name: "CSidebarNavItem",
+            name: `${this.$t("faq")}`,
+            to: "/faq",
+            icon: "cil-speech",
+          },
+          {
+            id: 2,
+            _name: "CSidebarNavDropdown",
+            name: `${this.$t("settings")}`,
+            icon: "cil-list",
+            items: [
+              {
+                _name: "CSidebarNavItem",
+                name: `${this.$t("bannerList")}`,
+                to: "/banner",
+                icon: "cil-user",
+              },
+              {
+                _name: "CSidebarNavItem",
+                name: `${this.$t("promotionList")}`,
+                to: "/bannerpromotion",
+                icon: "cil-user",
+              },
+              {
+                _name: "CSidebarNavItem",
+                name: `${this.$t("aboutus")}`,
+                to: "/aboutus",
+                icon: "cil-user",
+              },
+            ],
+          },
+
           // {
           //   id: 4,
           //   _name: "CSidebarNavItem",
@@ -307,6 +379,7 @@ export default {
           // },
         ],
       },
+      test: 0,
     };
   },
   computed: {
@@ -314,8 +387,8 @@ export default {
       return [this.sidebar];
     },
   },
-  created() {
-    //this.getPermissionList();
+  beforeCreate: async function () {
+    await this.$store.dispatch("getActiveData");
   },
 };
 </script>

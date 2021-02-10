@@ -1,14 +1,33 @@
 <template>
   <div v-if="profile">
-    <b-alert show variant="danger" class="d-flex alert m-0" v-if="$showAlert">
+    <b-alert
+      show
+      variant="danger"
+      :class="[
+        'd-flex m-0 justify-content-center',
+        status.requestApproveLog.statusId != 1 ? 'alert' : 'warning',
+      ]"
+      v-if="$showAlert"
+    >
+      <img
+        src="@/assets/images/sand-clock.png"
+        alt="logo-alert-warning"
+        class="logo-alert-warning"
+        v-if="status.requestApproveLog.statusId == 1"
+      />
       <img
         src="@/assets/images/alert.png"
         alt="logo-alert"
         class="logo-alert"
+        v-else
       />
-      <div class="w-100px m-auto text-center">{{ $t("attention") }}:</div>
-      <div class="three-lines m-auto">
-        {{ $t("warningLogs") }}
+      <div class="w-100px my-auto text-center">{{ $t("attention") }}:</div>
+      <div class="my-auto">
+        {{
+          status.requestApproveLog.statusId == 1
+            ? $t("waitApprove")
+            : $t("warningLogs")
+        }}
       </div></b-alert
     >
     <form class="form-box">
@@ -178,7 +197,11 @@
       </b-container>
     </form>
     <ModalAlert ref="modalAlert" :text="modalMessage" />
-    <ModalAlertError ref="modalAlertError" :text="modalMessage" :detailtext="detailMessage" />
+    <ModalAlertError
+      ref="modalAlertError"
+      :text="modalMessage"
+      :detailtext="detailMessage"
+    />
   </div>
 </template>
 
@@ -214,11 +237,11 @@ export default {
       status: null,
       warningData: null,
       isDisable: false,
+      iconStatus: "",
     };
   },
   created: async function () {
     await this.getData();
-    this.$hasChange = true;
   },
   computed: {
     seller: function () {
@@ -241,6 +264,9 @@ export default {
       if (resData.result == 1) {
         this.profile = resData.detail;
         this.$isLoading = true;
+
+        if (this.profile.user.seller.statusId == 2) this.$hasChange = true;
+        else this.$hasChange = false;
       }
 
       let statusData = await this.$callApi(
@@ -273,17 +299,28 @@ export default {
       if (data.result == 1) {
         if (data.detail == 1) {
           this.$refs.modalAlert.show();
+          setTimeout(() => {
+            this.$refs.modalAlert.hide();
+          }, 3000);
+          this.getData();
         } else {
           this.$refs.modalAlertError.show();
         }
       } else {
-        if(data.detail == 'general_seller_account') this.detailMessage = this.$t('generalSellerAccountError');
-        else if(data.detail == 'general_business_profile') this.detailMessage = this.$t('generalBusinessProfileError');
-        else if(data.detail == 'general_bank_account') this.detailMessage = this.$t('generalBankAccountError');
-        else if(data.detail == 'general_warehouse_address') this.detailMessage = this.$t('generalWarehouseAddressError');
-        else if(data.detail == 'invoice_prefix') this.detailMessage = this.$t('invoiceError');
-        else if(data.detail == 'logo') this.detailMessage =this.$t('logoError');
-        else if(data.detail == 'shipping') this.detailMessage = this.$t('shippingError');
+        if (data.detail == "general_seller_account")
+          this.detailMessage = this.$t("generalSellerAccountError");
+        else if (data.detail == "general_business_profile")
+          this.detailMessage = this.$t("generalBusinessProfileError");
+        else if (data.detail == "general_bank_account")
+          this.detailMessage = this.$t("generalBankAccountError");
+        else if (data.detail == "general_warehouse_address")
+          this.detailMessage = this.$t("generalWarehouseAddressError");
+        else if (data.detail == "invoice_prefix")
+          this.detailMessage = this.$t("invoiceError");
+        else if (data.detail == "logo")
+          this.detailMessage = this.$t("logoError");
+        else if (data.detail == "shipping")
+          this.detailMessage = this.$t("shippingError");
 
         this.$refs.modalAlertError.show();
       }
@@ -293,9 +330,6 @@ export default {
 </script>
 
 <style>
-.menuactive {
-  color: #ffb300 !important;
-}
 .btn-group-action button {
   background-color: transparent;
   border: none;

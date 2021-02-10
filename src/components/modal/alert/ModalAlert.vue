@@ -6,12 +6,19 @@
       hide-header
       hide-footer
       centered
+      no-close-on-backdrop
     >
-      <div class="modal-header">
-        <button type="button" aria-label="Close" class="close" @click="hide">×</button>
-      </div>
+      <!-- <div class="modal-header">
+        <button type="button" aria-label="Close" class="close" @click="hide">
+          ×
+        </button>
+      </div> -->
       <div class="text-center">
-        <img src="@/assets/images/icons/icon-check.png" alt="success" class="mb-3 img" />
+        <img
+          src="@/assets/images/icons/icon-check.png"
+          alt="success"
+          class="mb-3 img"
+        />
         <p class="text-text" v-if="text">{{ text }}</p>
       </div>
     </b-modal>
@@ -24,20 +31,21 @@ export default {
     text: {
       required: false,
       type: String
-    },
+    }
   },
   data() {
     return {
-      showModal: false,
+      showModal: false
     };
   },
+
   methods: {
     show() {
       this.showModal = true;
     },
     hide() {
       this.showModal = false;
-    },
+    }
   }
 };
 </script>
@@ -50,7 +58,7 @@ export default {
 
 .text-text {
   font-family: "Kanit-SemiBold" !important;
-  color: #16274A;
+  color: #16274a;
   margin-bottom: 0;
   font-size: 26px;
 }

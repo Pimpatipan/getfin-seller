@@ -2,7 +2,7 @@
   <div class="d-flex align-items-center min-vh-100 login-container">
     <b-container>
       <b-row class="justify-content-center">
-            <div class="w-100 px-xl-5 d-lg-flex header-login-box">
+        <div class="w-100 px-xl-5 d-lg-flex header-login-box">
           <div
             class="logoLogin mr-lg-5"
             v-bind:style="{
@@ -12,11 +12,11 @@
           <h1
             class="header-login font-weight-bold text-uppercase f-20 d-block d-lg-none text-center mb-5 mb-lg-0"
           >
-            Welcome to Partner Center
+            {{ $t("welcome") }}
           </h1>
           <div class="position-relative w-100 d-none d-lg-block">
             <div class="header-logo-box">
-              <h1 class="m-0">Welcome to Partner Center</h1>
+              <h1 class="m-0">{{ $t("welcome") }}</h1>
 
               <div class="lines-box text-center">
                 <div class="lines w-100 mb-2"></div>
@@ -41,34 +41,26 @@
           <b-card-group>
             <b-card class="forgetpass-box shadow-lg login-box">
               <div class="text-center">
-                <h1 class="header-login mb-5">Forget Password</h1>
+                <h1 class="header-login mb-5">{{ $t("forgetPass") }}</h1>
               </div>
               <b-card-body class="py-1">
                 <b-form onSubmit="return false;">
                   <div class="mb-4">
-                    <div class="d-flex login-main-box">
-                      <font-awesome-icon
-                        icon="user"
-                        class=" my-auto mr-2"
-                      />
-                      <InputText
+                    <div class="d-flex align-items-baseline">
+                      <font-awesome-icon icon="user" class="logo-login mr-2" />
+                      <InputTextIcon
                         class="login-input w-100 m-0"
                         v-model="form.email"
-                        textFloat="Email"
-                        placeholder="Email"
+                        textFloat=""
+                        :placeholder="$t('email')"
                         type="email"
                         name="email"
                         isRequired
                         @onKeyup="submitFormOnInput"
+                        :isValidate="$v.form.email.$error"
+                      :v="$v.form.email"
                       />
                     </div>
-
-                    <p
-                      class="text-danger mt-2 text-center"
-                      v-if="$v.form.email.$error"
-                    >
-                      This field can’t be empty.
-                    </p>
                   </div>
 
                   <b-row v-if="error != ''" class="m-2 text-center">
@@ -86,7 +78,7 @@
                         class="px-4 login-btn"
                         @click="checkForm"
                         :disabled="isDisable"
-                        >Submit</b-button
+                        >{{ $t("submit") }}</b-button
                       >
                     </b-col>
                   </b-row>
@@ -94,15 +86,28 @@
               </b-card-body>
             </b-card>
           </b-card-group>
-          <div class="my-3 text-center">
-            <span class=" f-12">
-              Already have an account?
+          <div class="mt-3 text-center">
+            <span class="f-12">
+              {{ $t("alreadyHasAcc") }}?
               <router-link :to="'/login'" class="">
-                <span class="text-underline">Login</span>
+                <span class="text-underline">{{ $t("login") }}</span>
               </router-link>
             </span>
           </div>
         </b-col>
+        <div class="text-center mt-3 col-12">
+          <span
+            :class="['pointer', $language == 'th' ? 'menuactive' : '']"
+            @click="changeLanguage('th')"
+            >ไทย</span
+          >
+          |
+          <span
+            :class="['pointer', $language == 'en' ? 'menuactive' : '']"
+            @click="changeLanguage('en')"
+            >English</span
+          >
+        </div>
       </b-row>
     </b-container>
 
@@ -114,7 +119,7 @@
 
 <script>
 import { required, email, minLength } from "vuelidate/lib/validators";
-import InputText from "@/components/inputs/InputText";
+import InputTextIcon from "@/components/inputs/InputTextIcon";
 import VueCookies from "vue-cookies";
 import ModalLoading from "@/components/modal/alert/ModalLoading";
 import ModalAlert from "@/components/modal/alert/ModalAlert";
@@ -123,7 +128,7 @@ import ModalAlertError from "@/components/modal/alert/ModalAlertError";
 export default {
   name: "ForgetPassword",
   components: {
-    InputText,
+    InputTextIcon,
     ModalLoading,
     ModalAlert,
     ModalAlertError,
@@ -151,6 +156,17 @@ export default {
     await this.getLogo();
   },
   methods: {
+    changeLanguage(value) {
+      this.language = value;
+      this.$cookies.set(
+        "language",
+        value,
+        60 * 60 * 24 * 365,
+        "/",
+        this.$cookiesDomain
+      );
+      location.reload();
+    },
     getLogo: async function () {
       let resData = await this.$callApi(
         "get",
@@ -178,8 +194,8 @@ export default {
       );
       this.isLoading = false;
       this.isDisable = false;
-      this.modalMessage = data.message;
-      
+      this.modalMessage = data.message || data.detail;
+
       if (data.result == 1) {
         this.$refs.modalLoading.hide();
         this.$refs.modalAlert.show();

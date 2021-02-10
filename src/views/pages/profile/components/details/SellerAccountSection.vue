@@ -81,6 +81,9 @@
                 :maxLength="10"
                 @onKeypress="isNumber($event)"
                 :disabled="true"
+                :buttonAction="() => $refs.modalRequestOTP.show()"
+                :buttonActionIcon="['fas', 'pen']"
+                buttonActionClass="text-gray-6"
               />
             </b-col>
           </b-row>
@@ -120,15 +123,15 @@
             ></b-col>
           </b-row>
           <b-row>
-            <b-col>
+            <b-col v-if="note != ''">
               <label class="font-weight-bold">{{ $t("noteFromAdmin") }}</label>
-              <p>{{ note }}</p> 
+              <p>{{ note }}</p>
             </b-col>
           </b-row>
           <b-row class="">
             <b-col class="d-flex justify-content-end">
               <button
-                :disabled="isDisable" 
+                :disabled="isDisable"
                 @click="checkForm(1)"
                 type="button"
                 class="btn btn-info btn-details-set ml-md-2 text-uppercase"
@@ -143,30 +146,40 @@
 
     <ModalAlert ref="modalAlert" :text="modalMessage" />
     <ModalAlertError ref="modalAlertError" :text="modalMessage" />
+    <ModalLoading ref="modalLoading" :hasClose="false" />
+    <ModalRequestOTP
+      v-if="forceRefresh"
+      ref="modalRequestOTP"
+      v-on:handleSuccessOTP="handleSuccessOTP"
+    />
   </div>
 </template>
 
 <script>
 import ModalAlert from "@/components/modal/alert/ModalAlert";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
+import ModalLoading from "@/components/modal/alert/ModalLoading";
 import InputText from "../../../profile/components/inputs/InputText";
 import { required } from "vuelidate/lib/validators";
+import ModalRequestOTP from "@/views/pages/profile/components/modals/ModalRequestOTP";
 export default {
   name: "user",
   props: {
     dataObject: {
       required: false,
-      type: Object,
+      type: Object
     },
     note: {
       required: false,
-      type: String,
-    },
+      type: String
+    }
   },
   components: {
     ModalAlert,
     ModalAlertError,
+    ModalLoading,
     InputText,
+    ModalRequestOTP
   },
   data() {
     return {
@@ -176,6 +189,7 @@ export default {
       activeItem: "seller-account",
       isDisable: false,
       languageList: [],
+      forceRefresh: true,
       form: {
         seller: {
           firstname: "",
@@ -193,16 +207,16 @@ export default {
           displayNameTranslation: [
             {
               languageId: 1,
-              name: "",
+              name: ""
             },
             {
               languageId: 2,
-              name: "",
-            },
-          ],
-        },
+              name: ""
+            }
+          ]
+        }
       },
-      noteAdmin: "",
+      noteAdmin: ""
     };
   },
   validations: {
@@ -214,26 +228,36 @@ export default {
         telephone: { required },
         displayNameTranslation: {
           $each: {
-            name: { required },
-          },
-        },
-      },
-    },
+            name: { required }
+          }
+        }
+      }
+    }
   },
-  created: async function () {
+  created: async function() {
     this.form.seller = this.dataObject;
     await this.getDatas();
   },
   watch: {
-    dataObject: function () {
+    dataObject: function() {
       this.form.seller = this.dataObject;
     },
-    note: function () {
+    note: function() {
       this.noteAdmin = this.note;
-    },
+    }
   },
   methods: {
-    isNumber: function (evt) {
+    handleSuccessOTP(val) {
+      this.form.seller.telephone = val.telephone;
+      this.submit();
+    },
+    handleForcefresh() {
+      this.forceRefresh = false;
+      this.$nextTick(() => {
+        this.forceRefresh = true;
+      });
+    },
+    isNumber: function(evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
       if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -251,7 +275,7 @@ export default {
     setActive(menuItem) {
       this.activeItem = menuItem;
     },
-    getDatas: async function () {
+    getDatas: async function() {
       let languages = await this.$callApi(
         "get",
         `${this.$baseUrl}/api/language`,
@@ -265,19 +289,19 @@ export default {
     },
 
     useSameLanguage() {},
-    checkForm: async function (flag) {
+    checkForm: async function(flag) {
       this.$v.form.$touch();
       if (this.$v.form.$error) {
         // await this.checkValidateTranslationList();
         return;
       }
 
-       this.isDisable = true;
+      this.isDisable = true;
       this.modalAlertShow = false;
       this.flag = flag;
       this.submit();
     },
-    checkValidateTranslationList: async function () {
+    checkValidateTranslationList: async function() {
       let isError = false;
       this.languageList.forEach((element, index) => {
         if (!isError) {
@@ -293,7 +317,9 @@ export default {
         }
       });
     },
-    submit: async function () {
+    submit: async function() {
+      this.$refs.modalLoading.show();
+
       let data = await this.$callApi(
         "patch",
         `${this.$baseUrl}/api/Profile/General/Account`,
@@ -301,16 +327,15 @@ export default {
         this.$headers,
         this.form.seller
       );
-
+      this.$refs.modalLoading.hide();
       this.modalMessage = data.message;
       this.isDisable = false;
 
       if (data.result == 1) {
         this.$refs.modalAlert.show();
-        // this.reloadData();
-        // setTimeout(function () {
-        //   window.location.reload();
-        // }, 3000);
+        setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
 
         this.reloadData();
         this.form.seller = this.dataObject;
@@ -321,13 +346,7 @@ export default {
         this.reloadData();
         this.form.seller = this.dataObject;
       }
-    },
-  },
+    }
+  }
 };
 </script>
-
-<style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-</style>

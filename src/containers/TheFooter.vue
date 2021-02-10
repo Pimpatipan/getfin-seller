@@ -1,7 +1,7 @@
 <template>
   <CFooter>
     <div>
-      <span class="ml-1">GetFin Seller &copy; 2020</span>
+      <span class="ml-1">GetFin Partner Center &copy; {{new Date() | moment('YYYY')}}</span>
     </div>
   </CFooter>
 </template>

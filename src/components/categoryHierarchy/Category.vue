@@ -2,17 +2,28 @@
   <div class="panel" :style="`width: calc(100% / ${maxLv})`">
     <div role="tablist" class="h-100">
       <b-card no-body class="mb-0">
-        <b-card-header header-tag="header" class="d-md-none border-top" role="tab">
-          <b-button block v-b-toggle="'accordion-'+index" variant="category">Level {{index+1}}</b-button>
+        <b-card-header
+          header-tag="header"
+          class="d-md-none border-top"
+          role="tab"
+        >
+          <b-button block v-b-toggle="'accordion-' + index" variant="category"
+            >Level {{ index + 1 }}</b-button
+          >
         </b-card-header>
-        <b-collapse :id="`accordion-${index}`" visible accordion="my-accordion" role="tabpanel">
+        <b-collapse
+          :id="`accordion-${index}`"
+          visible
+          accordion="my-accordion"
+          role="tabpanel"
+        >
           <b-card-body>
             <b-card-text>
               <div class="panel-input-search-category">
                 <b-input-group>
                   <b-form-input
                     class="input-serach"
-                    placeholder="Keyword"
+                    :placeholder="$t('search')"
                     v-model="search"
                     autocomplete="off"
                   ></b-form-input>
@@ -26,21 +37,30 @@
 
               <div class="panel-category-box">
                 <div
-                  :class="['panel-category d-flex justify-content-between align-items-center', selectedId == option.id ? 'active' : '' ]"
+                  :class="[
+                    'panel-category d-flex justify-content-between align-items-center',
+                    selectedId == option.id ? 'active' : ''
+                  ]"
                   v-for="(option, key) in availableOptions"
                   :key="`${index}-${key}-${option.id}`"
-                  @click="onOptionClick( option )"
+                  @click="onOptionClick(option)"
                 >
                   <div>{{ option.name }}</div>
                   <div :class="['pl-2']">
-                    <font-awesome-icon v-if="!option.isLast" icon="chevron-right" class="icon d-block" />
+                    <font-awesome-icon
+                      v-if="!option.isLast"
+                      icon="chevron-right"
+                      class="icon d-block"
+                    />
                   </div>
                 </div>
 
                 <div
                   class="text-center text-black-50 my-3"
                   v-if="availableOptions.length === 0"
-                >No data</div>
+                >
+                  {{ $t("noDataCategory") }}
+                </div>
               </div>
             </b-card-text>
           </b-card-body>
@@ -55,33 +75,33 @@ export default {
   props: {
     number: {
       required: false,
-      type: Number,
+      type: Number
     },
     index: {
       required: true,
-      type: Number,
+      type: Number
     },
     list: {
       required: true,
-      type: Array,
+      type: Array
     },
     selected: {
       required: true,
-      type: Array,
+      type: Array
     },
     arrow: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     maxLv: {
       required: false,
-      type: Number,
-    },
+      type: Number
+    }
   },
   watch: {
-    list: function () {
+    list: function() {
       this.search = "";
-    },
+    }
   },
   computed: {
     selectedId() {
@@ -97,32 +117,32 @@ export default {
       let options = this.list;
       if (criteria) {
         return options.filter(
-          (opt) => opt.name.toLowerCase().indexOf(criteria) > -1
+          opt => opt.name.toLowerCase().indexOf(criteria) > -1
         );
       }
       return options;
-    },
+    }
   },
   methods: {
     onOptionClick(option) {
       // this.search = "";
       let data = {
         id: option.id,
-        isLast: option.isLast,
+        isLast: option.isLast
       };
       this.$emit("handleSelect", this.index, data);
 
       if (window.screen.width < 992) {
         this.$root.$emit("bv::toggle::collapse", `accordion-${this.index + 1}`);
       }
-    },
+    }
   },
   data() {
     return {
       search: "",
-      value: [],
+      value: []
     };
-  },
+  }
 };
 </script>
 
@@ -202,4 +222,3 @@ export default {
   }
 }
 </style>
-

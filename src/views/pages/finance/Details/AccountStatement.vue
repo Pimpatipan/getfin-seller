@@ -144,7 +144,12 @@
                             :class="{ 'float-right': activeItem == 2 }"
                           />
 
-                          <div class="mx-3 mt-2 when-close">
+                          <label class="my-1 float-right mr-3"
+                            >฿
+                            {{ openObject.subtotal | numeral("0,0.00") }}</label
+                          >
+
+                          <div class="when-close">
                             <span class="statement-label">
                               {{ openObject.startDate | moment($formatDate) }} -
                               {{ openObject.endDate | moment($formatDate) }}
@@ -188,7 +193,7 @@
                               <label class="my-1"
                                 >฿
                                 {{
-                                  openObject.openingBalance | numeral("0,0.00")
+                                  openObject.grandTotal | numeral("0,0.00")
                                 }}</label
                               >
                             </b-col>
@@ -228,19 +233,6 @@
                               </b-row>
                               <b-row>
                                 <b-col>
-                                  <label>{{ $t("paymentFee") }}</label>
-                                </b-col>
-                                <b-col class="d-flex justify-content-end">
-                                  <label
-                                    >฿
-                                    {{
-                                      openObject.paymentFee | numeral("0,0.00")
-                                    }}</label
-                                  >
-                                </b-col>
-                              </b-row>
-                              <b-row>
-                                <b-col>
                                   <label>{{ $t("getfinFee") }}</label>
                                 </b-col>
                                 <b-col class="d-flex justify-content-end">
@@ -260,9 +252,21 @@
                                   <label
                                     >฿
                                     {{
-                                      (openObject.omiseCharge +
-                                        openObject.omiseVat)
+                                      openObject.paymentFee
                                         | numeral("0,0.00")
+                                    }}</label
+                                  >
+                                </b-col>
+                              </b-row>
+                                     <b-row>
+                                <b-col class="ml-2">
+                                  <label>- {{ $t("omiseWithdraw") }}</label>
+                                </b-col>
+                                <b-col class="d-flex justify-content-end">
+                                  <label
+                                    >฿
+                                    {{
+                                      30 | numeral("0,0.00")
                                     }}</label
                                   >
                                 </b-col>
@@ -280,7 +284,7 @@
                                   >
                                 </b-col>
                               </b-row>
-                              <b-row >
+                              <b-row>
                                 <b-col class="ml-2">
                                   <label>- {{ $t("omiseVat") }}</label>
                                 </b-col>
@@ -295,7 +299,7 @@
                               </b-row>
                             </b-col>
                           </b-row>
-                          <b-row class="mx-3 py-3 collapse-element-border">
+                          <!-- <b-row class="mx-3 py-3 collapse-element-border">
                             <b-col>
                               <b-row>
                                 <b-col>
@@ -325,7 +329,7 @@
                                 </b-col>
                               </b-row>
                             </b-col>
-                          </b-row>
+                          </b-row> -->
                           <b-row
                             class="mx-3 py-3 collapse-element-border collapse-statement-label-custom"
                           >
@@ -441,9 +445,7 @@
                             <b-col class="d-flex justify-content-end">
                               <label class="my-1"
                                 >฿
-                                {{
-                                  item.openingBalance | numeral("0,0.00")
-                                }}</label
+                                {{ item.grandTotal | numeral("0,0.00") }}</label
                               >
                             </b-col>
                           </b-row>
@@ -722,9 +724,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
 .bank-panel {
   border: #ebebeb solid 1px;
 }

@@ -53,7 +53,7 @@
             ></b-col>
           </b-row>
           <b-row>
-            <b-col>
+            <b-col v-if="dataWarningLog[4].warningLog.note != ''">
               <label class="font-weight-bold">{{ $t("noteFromAdmin") }}</label>
               <p>{{ dataWarningLog[4].warningLog.note }}</p>
             </b-col>
@@ -74,6 +74,7 @@
       </b-row>
       <ModalAlert ref="modalAlert" :text="modalMessage" />
       <ModalAlertError ref="modalAlertError" :text="modalMessage" />
+      <ModalLoading ref="modalLoading" :hasClose="false" />
     </b-container>
   </div>
 </template>
@@ -81,10 +82,12 @@
 <script>
 import ModalAlert from "@/components/modal/alert/ModalAlert";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
+import ModalLoading from "@/components/modal/alert/ModalLoading";
 export default {
   components: {
     ModalAlert,
     ModalAlertError,
+    ModalLoading
   },
   props: {
     dataObject: {
@@ -197,6 +200,8 @@ export default {
       this.flag = flag;
     },
     submit: async function () {
+      this.$refs.modalLoading.show();
+
       let data = await this.$callApi(
         "patch",
         `${this.$baseUrl}/api/Profile/Logo`,
@@ -204,14 +209,15 @@ export default {
         this.$headers,
         this.form.sellerLogo
       );
+      this.$refs.modalLoading.hide();
       this.modalMessage = data.message;
       this.isDisable = false;
       if (data.result == 1) {
         this.$refs.modalAlert.show();
         this.reloadData();
-        // setTimeout(function () {
-        //   window.location.reload();
-        // }, 3000);
+       setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.$hasChange = false;
       } else {
         this.$refs.modalAlertError.show();

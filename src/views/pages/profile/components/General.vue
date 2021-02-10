@@ -176,9 +176,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-</style>

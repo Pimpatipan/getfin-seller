@@ -8,7 +8,7 @@
               <b-row>
                 <b-col sm="6">
                   <label class="label-text my-3">
-                    {{$t('inStock')}}:
+                    {{ $t("inStock") }}:
                     <span class="text-body pl-3">{{
                       stockitems.stock.inStock | numeral("0,0")
                     }}</span>
@@ -18,17 +18,17 @@
                   <span
                     class="ml-sm-2 text-underline pointer"
                     @click="setStockQty(1)"
-                    >{{$t('increase')}}</span
+                    >{{ $t("increase") }}</span
                   >
                   <span
                     class="ml-2 text-underline pointer"
                     @click="setStockQty(2)"
-                    >{{$t('decrease')}}</span
+                    >{{ $t("decrease") }}</span
                   >
                   <span
                     class="ml-2 text-underline pointer"
                     @click="setStockQty(3)"
-                    >{{$t('adjust')}}</span
+                    >{{ $t("adjust") }}</span
                   >
                 </b-col>
               </b-row>
@@ -40,12 +40,13 @@
           <b-row>
             <b-col sm="6">
               <label class="label-text"
-                >{{$t('onHold')}} : {{ stockitems.stock.onHold | numeral("0,0") }}</label
+                >{{ $t("onHold") }} :
+                {{ stockitems.stock.onHold | numeral("0,0") }}</label
               >
             </b-col>
             <b-col sm="6" class="mt-2 mt-md-0">
               <label class="label-text"
-                >{{$t('availableStock')}}:
+                >{{ $t("availableStock") }}:
                 {{ stockitems.stock.available | numeral("0,0") }}</label
               >
             </b-col>
@@ -58,7 +59,7 @@
               hover
               :items="stockitems.stockLog.stockLogList"
               :fields="stockFields"
-              :busy="isBusy"
+              :busy="isBusyTable"
               show-empty
               :empty-text="$t('noData')"
               class="table-list"
@@ -136,7 +137,11 @@ export default {
     data: {
       required: false,
       type: Array | Object,
-    }
+    },
+    isBusy: {
+      required: false,
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -144,7 +149,6 @@ export default {
       status: 0,
       isDisables: true,
       rowsStock: 0,
-      isBusy: false,
       filterStock: {
         perPage: 10,
         pageNo: 1,
@@ -189,11 +193,19 @@ export default {
         { value: 50, text: `50 / ${this.$t("page")}` },
         { value: 100, text: `100 / ${this.$t("page")}` },
       ],
+      isBusyTable: false
     };
+  },
+  watch: {
+    data() {
+      this.stockitems = this.data;
+      this.isBusyTable = this.isBusy;
+    },
   },
   created: async function () {
     this.stockitems = this.data;
     this.rowsStock = this.stockitems.stockLog.count;
+    this.isBusyTable = this.isBusy;
   },
   methods: {
     setStockQty(type) {
@@ -201,11 +213,13 @@ export default {
     },
     paginationStock(Page) {
       this.filterStock.pageNo = Page;
+      this.$emit("paginationStock", this.filterStock.pageNo);
       //this.getStockData();
     },
     hanndleChangePerpageStock(value) {
       this.filterStock.pageNo = 1;
       this.filterStock.perPage = value;
+      this.$emit("hanndleChangePerpageStock", value);
       //this.getStockData();
     },
   },

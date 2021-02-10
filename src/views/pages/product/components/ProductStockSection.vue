@@ -5,6 +5,9 @@
       @setStockQty="setStockQty"
       :id="simpleProductId"
       v-if="productTypeId == 1"
+      @paginationStock="paginationStock"
+      @hanndleChangePerpageStock="hanndleChangePerpageStock"
+      :isBusy="isBusy"
     />
 
     <form class="form-box" v-else>
@@ -199,6 +202,8 @@
             @setStockQty="setStockQty"
             :id="simpleProductId"
             :isBusy="isBusy"
+            @paginationStock="paginationStock"
+            @hanndleChangePerpageStock="hanndleChangePerpageStock"
           />
         </b-container>
       </div>
@@ -338,11 +343,10 @@ export default {
         } else {
           this.stockitems = stockList.detail.stockDetail;
           this.rowsStock = stockList.detail.count;
-          this.isBusy = false;
         }
       }
 
-      //this.isLoading = false;
+      this.isBusy = false;
       this.$isLoading = true;
     },
     setStockQty(type, stock) {

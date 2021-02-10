@@ -21,7 +21,7 @@
                 isRequired
                 :isValidate="$v.form.bankAccount.accountName.$error"
                 :v="$v.form.bankAccount.accountName"
-                 :disabled="isApproveEdit"
+                :disabled="isApproveEdit"
               />
             </b-col>
           </b-row>
@@ -38,7 +38,7 @@
                 isRequired
                 :isValidate="$v.form.bankAccount.accountNo.$error"
                 :v="$v.form.bankAccount.accountNo"
-                 :disabled="isApproveEdit"
+                :disabled="isApproveEdit"
               />
             </b-col>
           </b-row>
@@ -71,7 +71,7 @@
                 isRequired
                 :isValidate="$v.form.bankAccount.bankId.$error"
                 :v="$v.form.bankAccount.bankId"
-                 :disabled="isApproveEdit"
+                :disabled="isApproveEdit"
               />
             </b-col>
           </b-row>
@@ -79,7 +79,7 @@
             <b-col>
               <UploadFile
                 classLabelName="col-lg-4"
-                classInputName="col-lg-6"
+                classInputName="col-10 col-lg-6"
                 :textFloat="$t('bankDocument')"
                 :placeholder="$t('bankDocument')"
                 format="all"
@@ -102,7 +102,7 @@
             ></b-col>
           </b-row>
           <b-row>
-            <b-col>
+            <b-col v-if="note != ''">
               <label class="font-weight-bold">{{ $t("noteFromAdmin") }}</label>
               <p>{{ note }}</p>
             </b-col>
@@ -126,12 +126,14 @@
     <!-- Modal -->
     <ModalAlert ref="modalAlert" :text="modalMessage" />
     <ModalAlertError ref="modalAlertError" :text="modalMessage" />
+    <ModalLoading ref="modalLoading" :hasClose="false" />
   </div>
 </template>
 
 <script>
 import ModalAlert from "@/components/modal/alert/ModalAlert";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
+import ModalLoading from "@/components/modal/alert/ModalLoading";
 import InputText from "../../../profile/components/inputs/InputText";
 import InputSelect from "../../../profile/components/inputs/InputSelect";
 import UploadFile from "../../../profile/components/inputs/UploadFile";
@@ -155,6 +157,7 @@ export default {
   components: {
     ModalAlert,
     ModalAlertError,
+    ModalLoading,
     InputText,
     UploadFile,
     InputSelect,
@@ -273,6 +276,8 @@ export default {
       this.submit();
     },
     submit: async function () {
+      this.$refs.modalLoading.show();
+
       let data = await this.$callApi(
         "patch",
         `${this.$baseUrl}/api/Profile/General/BankAccount`,
@@ -283,11 +288,12 @@ export default {
 
       this.modalMessage = data.message;
       this.isDisable = false;
+      this.$refs.modalLoading.hide();
       if (data.result == 1) {
         this.$refs.modalAlert.show();
-        // setTimeout(function () {
-        //   window.location.reload();
-        // }, 3000);
+ setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.$hasChange = false;
         this.reloadData();
       } else {
@@ -299,8 +305,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-</style>

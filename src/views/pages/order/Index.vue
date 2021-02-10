@@ -26,9 +26,26 @@
               }})</span
             >
           </b-button>
-          <b-button class="btn-main ml-2" @click="downloadPackingList">{{
-            $t("exportPackingList")
-          }}</b-button>
+          <b-button
+            class="btn-main ml-2 w-auto-mobile"
+            @click="downloadPackingList"
+            v-if="filter.Status[0] == 4"
+          >
+            <font-awesome-icon
+              icon="download"
+              title="filter-btn"
+              class="text-white mr-0 mr-sm-1 d-inline d-sm-none"
+            />
+            <span class="d-none d-sm-inline font-weight-bold text-uppercase">{{
+              $t("exportPackingList")
+            }}</span></b-button
+          >
+          <b-button
+            v-if="filter.Status[0] == 4 || filter.Status[0] == 14"
+            class="btn-main ml-2 w-auto-mobile"
+            @click="multiApproveShipping"
+            >{{ $t("alreadyPack") }}</b-button
+          >
         </b-col>
       </CRow>
       <b-sidebar
@@ -177,7 +194,15 @@
                 ></b-form-checkbox>
               </template>
               <template v-slot:cell(firstName)="data">
-                <span>{{ data.item.firstName }} {{ data.item.lastName }}</span>
+                <span
+                  >{{ data.item.firstName }} {{ data.item.lastName }}
+                  <font-awesome-icon
+                    icon="comment"
+                    title="chat"
+                    class="pointer text-warning"
+                    @click="directToChat(data.item)"
+                  ></font-awesome-icon
+                ></span>
               </template>
               <template v-slot:cell(createdTime)="data">
                 <span>
@@ -259,16 +284,19 @@
 
     <ModalAlertError ref="modalAlertError" :text="modalMessage" />
     <ModalLoading ref="modalLoading" :hasClose="false" />
+    <ModalAlert ref="modalAlert" :text="modalMessage" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Vue from "vue";
 import * as moment from "moment/moment";
 import InputText from "@/components/inputs/InputText";
 import InputSelect from "@/components/inputs/InputSelect";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
 import ModalLoading from "@/components/modal/alert/ModalLoading";
+import ModalAlert from "@/components/modal/alert/ModalAlert";
 
 export default {
   name: "OrderIndex",
@@ -277,10 +305,12 @@ export default {
     InputSelect,
     ModalAlertError,
     ModalLoading,
+    ModalAlert,
   },
   data() {
     return {
       statusList: [],
+      hideColumn: "d-none",
       paymentChannelList: [],
       paymentChanelSelected: 0,
       list: [],
@@ -291,10 +321,6 @@ export default {
         userId: null,
       },
       fields: [
-        {
-          key: "ids",
-          label: "#",
-        },
         {
           key: "orderNo",
           label: `${this.$t("orderNo")}`,
@@ -313,7 +339,7 @@ export default {
         {
           key: "paymentType",
           label: `${this.$t("pendingMethod")}`,
-          class: "w-100px",
+          class: "w-200",
         },
         {
           key: "grandTotal",
@@ -343,7 +369,7 @@ export default {
         startDate: "",
         endDate: "",
         OrderNo: "",
-        Status: [],
+        Status: [4],
         PaymentChanel: [],
       },
       paymentChannelFilter: {
@@ -371,23 +397,29 @@ export default {
     };
   },
   created: async function () {
+    this.fields.unshift({
+      key: "ids",
+      label: "#",
+    });
+
     await this.getList();
-    await this.getAllData();
-    this.activeItem = "ทั้งหมด";
+    await this.getAllData(4);
+    this.activeItem =
+      Vue.prototype.$language == "th" ? "พร้อมจัดส่ง" : "Ready to ship";
   },
   watch: {
     selected: function () {
-      if (this.selected.length == this.allItems.length) {
+      if (this.selected.length == this.allItems.count) {
         this.selectedAll = true;
       } else {
         this.selectedAll = false;
       }
     },
     selectedAll: function () {
-      if (this.selected.length != this.allItems.length) {
+      if (this.selected.length != this.allItems.count) {
         if (this.selectedAll) {
           this.selected = [];
-          this.allItems.forEach((element, index) => {
+          this.allItems.dataList.forEach((element, index) => {
             this.selected.push(element.id);
           });
         }
@@ -446,7 +478,7 @@ export default {
     },
   },
   methods: {
-    getAllData: async function () {
+    getAllData: async function (val) {
       let filterAll = {
         PageNo: 1,
         PerPage: -1,
@@ -456,7 +488,7 @@ export default {
         startDate: "",
         endDate: "",
         OrderNo: "",
-        Status: [],
+        Status: [val],
         PaymentChanel: [],
       };
 
@@ -468,7 +500,7 @@ export default {
         filterAll
       );
       if (resData.result == 1) {
-        this.allItems = resData.detail.dataList;
+        this.allItems = resData.detail;
       }
     },
     getList: async function () {
@@ -524,11 +556,27 @@ export default {
       this.$refs.filterSidebar.hide(true);
       this.getList();
     },
-    getDataByOrderStatus(status, id) {
+    getDataByOrderStatus: async function (status, id) {
       this.activeItem = status;
       this.filter.Status = [];
       if (id != 0) this.filter.Status.push(id);
-      this.getList();
+      await this.checkOrderStatus();
+      await this.getList();
+    },
+    checkOrderStatus() {
+      if (this.filter.Status[0] == 4 || this.filter.Status[0] == 14) {
+        this.getAllData(this.filter.Status[0]);
+        if (this.fields[0].key != "ids") {
+          this.fields.unshift({
+            key: "ids",
+            label: "#",
+          });
+        }
+      } else {
+        if (this.fields[0].key == "ids") this.fields.shift();
+      }
+      this.selected = [];
+      this.selectedAll = false;
     },
     handleChangePaymentChannel: async function (value) {
       this.filter.PaymentChanel = [];
@@ -556,11 +604,6 @@ export default {
     },
     btnSearch() {
       this.filter.PageNo = 1;
-      this.getList();
-    },
-    hanndleStatusList(value) {
-      this.filter.PageNo = 1;
-      this.filter.statusId = value;
       this.getList();
     },
     checkAllSelect() {
@@ -592,6 +635,14 @@ export default {
       this.filter.PaymentChanel = [];
       this.$refs.filterSidebar.hide(true);
       this.getList();
+    },
+    directToChat(data) {
+      this.$store.commit("setOtherProfile", data);
+      setTimeout(() => {
+        this.$router.push({
+          path: "/chat",
+        });
+      }, 500);
     },
     downloadPackingList: async function () {
       if (this.selected.length == 0) {
@@ -637,12 +688,39 @@ export default {
           // }
         });
     },
+    multiApproveShipping: async function () {
+      if (this.selected.length == 0) {
+        this.modalMessage = this.$t("selectOrderError");
+        this.$refs.modalAlertError.show();
+        return;
+      }
+
+      this.$refs.modalLoading.show();
+
+      let request = {
+        Id: this.selected,
+      };
+      let resData = await this.$callApi(
+        "post",
+        `${this.$baseUrl}/api/Transaction/MultiApproveShipping`,
+        null,
+        this.$headers,
+        request
+      );
+      this.modalMessage = resData.detail[0] || resData.message;
+       this.$store.dispatch("getActiveData");
+      if (resData.result == 1) {
+        this.$refs.modalLoading.hide();
+        this.$refs.modalAlert.show();
+        setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
+        this.selected = [];
+        this.selectedAll = false;
+
+        this.getList();
+      } else this.$refs.modalAlertError.show();
+    },
   },
 };
 </script>
-
-<style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-</style>

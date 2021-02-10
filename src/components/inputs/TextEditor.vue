@@ -33,60 +33,60 @@ export default {
   props: {
     textFloat: {
       required: true,
-      type: String,
+      type: String
     },
     placeholder: {
       required: true,
-      type: String,
+      type: String
     },
     required: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     isRequired: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     pattern: {
       required: false,
-      type: String,
+      type: String
     },
     detail: {
       required: false,
-      type: String,
+      type: String
     },
     name: {
       required: false,
-      type: String,
+      type: String
     },
     value: {
       required: false,
-      type: String,
+      type: String
     },
     isDisplay: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     rows: {
       required: false,
-      type: Number,
+      type: Number
     },
     isValidate: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     maxLength: {
       required: false,
-      type: Number,
+      type: Number
     },
     img: {
       required: false,
-      type: String,
+      type: String
     },
     v: {
       required: false,
-      type: Object,
-    },
+      type: Object
+    }
   },
   data() {
     return {
@@ -94,7 +94,7 @@ export default {
         //key: "SDB17hC8C4F4A3F3D3gxrmztdakH3fiD-17D2E2F2C1E4F1B2B8D7C7==",
         // apiKey: 'SDB17hC8C4F4A3F3D3gxrmztdakH3fiD-17D2E2F2C1E4F1B2B8D7C7==',
         events: {
-          "image.inserted": async ($img) => {
+          "image.inserted": async $img => {
             var xhr = new XMLHttpRequest();
             xhr.responseType = "blob";
             xhr.onload = async () => {
@@ -103,7 +103,7 @@ export default {
               reader.onload = async () => {
                 var blobAsDataUrl = reader.result;
                 var body = {
-                  base64: blobAsDataUrl,
+                  base64: blobAsDataUrl
                 };
                 let data = await this.$callApi(
                   "post",
@@ -119,7 +119,7 @@ export default {
             xhr.open("GET", $img[0].src);
             xhr.send();
             //  xhr.abort();
-          },
+          }
         },
         charCounterCount: true,
         toolbarInline: false,
@@ -147,8 +147,8 @@ export default {
               "backgroundColor",
               "inlineClass",
               "inlineStyle",
-              "clearFormatting",
-            ],
+              "clearFormatting"
+            ]
           },
           moreParagraph: {
             buttons: [
@@ -164,8 +164,8 @@ export default {
               "lineHeight",
               "outdent",
               "indent",
-              "quote",
-            ],
+              "quote"
+            ]
           },
           moreRich: {
             buttons: [
@@ -178,8 +178,8 @@ export default {
               "specialCharacters",
               "embedly",
               // "insertFile",
-              "insertHR",
-            ],
+              "insertHR"
+            ]
           },
           moreMisc: {
             buttons: [
@@ -191,11 +191,11 @@ export default {
               // "spellChecker",
               "selectAll",
               "html",
-              "help",
+              "help"
             ],
             align: "right",
-            buttonsVisible: 2,
-          },
+            buttonsVisible: 2
+          }
         },
         fontFamily: {
           "Arial,Helvetica,sans-serif": "Arial",
@@ -209,15 +209,15 @@ export default {
           "Kanit-Medium": "Kanit Medium",
           "Kanit-Regular": "Kanit Regular",
           "Kanit-Light": "Kanit Light",
-          "Kanit-Thin": "Kanit Thin",
+          "Kanit-Thin": "Kanit Thin"
         },
-        videoUpload: false,
+        videoUpload: false
       },
 
       init: {
         height: 500,
-        init_instance_callback: (editor) => {
-          editor.on("change", (e) => {
+        init_instance_callback: editor => {
+          editor.on("change", e => {
             //  console.log('the event object ', e);
             //  console.log('the editor object ', editor);
             //console.log('the content ', editor.getContent());
@@ -225,13 +225,18 @@ export default {
           });
         },
         plugins: [
-          "print preview paste importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons",
+          "print preview paste importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons"
         ],
         menubar: "file edit view insert format table help",
         toolbar:
           "bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl",
         toolbar_sticky: true,
         toolbar_mode: "sliding",
+        font_formats:
+          "Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Kanit Regular=Kanit; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
+        // content_style: " body { font-family: Kanit-Regular; }",
+        content_style:
+          "@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;300&display=swap'); body { font-family: Kanit  }",
         quickbars_selection_toolbar:
           "bold italic | quicklink h2 h3 blockquote quickimage quicktable",
         importcss_append: true,
@@ -241,19 +246,19 @@ export default {
             title: "New Table",
             description: "creates a new table",
             content:
-              '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>',
+              '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>'
           },
           {
             title: "Starting my story",
             description: "A cure for writers block",
-            content: "Once upon a time...",
+            content: "Once upon a time..."
           },
           {
             title: "New list with dates",
             description: "New List with dates",
             content:
-              '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>',
-          },
+              '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>'
+          }
         ],
         template_cdate_format: "[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]",
         template_mdate_format: "[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]",
@@ -264,12 +269,12 @@ export default {
             return;
           }
           var body = {
-            base64: "data:image/jpeg;base64," + blobInfo.base64(),
+            base64: "data:image/jpeg;base64," + blobInfo.base64()
           };
           var config = {
-            onUploadProgress: (progressEvent) => {
+            onUploadProgress: progressEvent => {
               progress((progressEvent.loaded / progressEvent.total) * 100);
-            },
+            }
           };
           // this.axios
           //   .post(`${this.$baseUrl}/api/image/WYSIWYG/save`, body, config)
@@ -298,15 +303,15 @@ export default {
           } else {
             failure("Upload fail");
           }
-        },
-      },
+        }
+      }
     };
   },
   methods: {
     onDataChange(val) {
       this.$emit("onDataChange", val);
-    },
-  },
+    }
+  }
 };
 </script>
 

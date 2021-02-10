@@ -43,7 +43,7 @@
             >
               <template v-slot:cell(imageUrl)="data">
                 <div
-                  class="image"
+                  class="image b-contain"
                   v-bind:style="{
                     'background-image': 'url(' + data.item.imageUrl + ')'
                   }"
@@ -175,11 +175,12 @@ export default {
         {
           key: "startDateCampaign",
           label: `${this.$t("campaignPeriod")}`,
-          class: "w-100px"
+          class: "w-200"
         },
         {
           key: "id",
-          label: ""
+          label: "",
+          class: "w-100px"
         }
       ],
       items: [],
@@ -192,8 +193,9 @@ export default {
         PerPage: 10,
         StartDate: null,
         EndDate: null,
-        Status: [],
-        Search: ""
+        Status: [1],
+        Search: "",
+        IsJoin: false
       },
       pageOptions: [
         { value: 10, text: `10 / ${this.$t("page")}` },
@@ -220,9 +222,11 @@ export default {
     handleActiveItem(val) {
       this.activeItem = val;
       if (this.activeItem == "Available Campaign") {
-        this.filter.Status = [];
-      } else {
+        this.filter.IsJoin = false;
         this.filter.Status = [1];
+      } else {
+        this.filter.IsJoin = true;
+        this.filter.Status = [4];
       }
       this.getList();
     },
@@ -323,13 +327,10 @@ export default {
 </script>
 
 <style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-
 .image {
-  width: 100%;
-  padding-top: 42.9%;
+  width: 50%;
+  padding-top: 50%;
+  margin: auto;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

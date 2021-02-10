@@ -4,6 +4,9 @@
       <CRow class="no-gutters px-3 px-sm-0">
         <b-col sm="5" class="text-center text-sm-left my-3 my-lg-0">
           <h1 class="mr-sm-4 header-main text-uppercase">Dashboard</h1>
+          <span class="f-18 font-weight-bold">{{
+            $t("dbProductOverview")
+          }}</span>
         </b-col>
       </CRow>
 
@@ -23,7 +26,9 @@
             <div
               class="dashboard-status px-2 py-3 d-flex justify-content-between"
             >
-              <p class="m-0 main-label my-auto one-line">{{ $t("question") }}</p>
+              <p class="m-0 main-label my-auto one-line">
+                {{ $t("question") }}
+              </p>
               <p class="m-0 dashboard-status-value">
                 {{ statusData.question | numeral("0,0") }}
               </p>
@@ -43,7 +48,9 @@
             <div
               class="dashboard-status px-2 py-3 d-flex justify-content-between"
             >
-              <p class="m-0 main-label my-auto one-line">{{ $t("outOfStock") }}</p>
+              <p class="m-0 main-label my-auto one-line">
+                {{ $t("outOfStock") }}
+              </p>
               <p class="m-0 dashboard-status-value">
                 {{ statusData.outOfStock | numeral("0,0") }}
               </p>
@@ -53,7 +60,9 @@
             <div
               class="dashboard-status px-2 py-3 d-flex justify-content-between"
             >
-              <p class="m-0 main-label my-auto one-line">{{ $t("returnProduct") }}</p>
+              <p class="m-0 main-label my-auto one-line">
+                {{ $t("returnProduct") }}
+              </p>
               <p class="m-0 dashboard-status-value">
                 {{ statusData.rejectProduct | numeral("0,0") }}
               </p>
@@ -63,7 +72,9 @@
             <div
               class="dashboard-status px-2 py-3 d-flex justify-content-between"
             >
-              <p class="m-0 main-label my-auto one-line">{{ $t("waitForPay") }}</p>
+              <p class="m-0 main-label my-auto one-line">
+                {{ $t("waitForPay") }}
+              </p>
               <p class="m-0 dashboard-status-value">
                 {{ statusData.waitForPay | numeral("0,0") }}
               </p>
@@ -73,7 +84,9 @@
             <div
               class="dashboard-status px-2 py-3 d-flex justify-content-between"
             >
-              <p class="m-0 main-label my-auto one-line">{{ $t("waitForShip") }}</p>
+              <p class="m-0 main-label my-auto one-line">
+                {{ $t("waitForShip") }}
+              </p>
               <p class="m-0 dashboard-status-value">
                 {{ statusData.waitForShip | numeral("0,0") }}
               </p>
@@ -83,7 +96,9 @@
             <div
               class="dashboard-status px-2 py-3 d-flex justify-content-between"
             >
-              <p class="m-0 main-label my-auto one-line">{{ $t("waitForConfirm") }}</p>
+              <p class="m-0 main-label my-auto one-line">
+                {{ $t("waitForConfirm") }}
+              </p>
               <p class="m-0 dashboard-status-value">
                 {{ statusData.waitForConfirm | numeral("0,0") }}
               </p>
@@ -93,7 +108,9 @@
             <div
               class="dashboard-status px-2 py-3 d-flex justify-content-between"
             >
-              <p class="m-0 main-label my-auto one-line">{{ $t("returnRequest") }}</p>
+              <p class="m-0 main-label my-auto one-line">
+                {{ $t("returnRequest") }}
+              </p>
               <p class="m-0 dashboard-status-value">
                 {{ statusData.returnRequest | numeral("0,0") }}
               </p>
@@ -103,7 +120,9 @@
             <div
               class="dashboard-status px-2 py-3 d-flex justify-content-between"
             >
-              <p class="m-0 main-label my-auto one-line">{{ $t("codReject") }}</p>
+              <p class="m-0 main-label my-auto one-line">
+                {{ $t("codReject") }}
+              </p>
               <p class="m-0 dashboard-status-value">
                 {{ statusData.codReject | numeral("0,0") }}
               </p>
@@ -113,56 +132,76 @@
       </div>
 
       <div class="mt-3 bg-white py-3 py-sm-0">
-        <div v-if="performanceData">
-          <div class="dashboard-status-box p-1 performance-box">
-            <div
-              class="dashboard-status px-2 py-3 d-flex justify-content-between"
-            >
-              <p class="m-0 main-label my-auto one-line">{{ $t("revenue") }}</p>
-              <p class="m-0 dashboard-status-value">
-                {{ performanceData.totalRevenue | numeral("0,0") }}
-              </p>
-            </div>
-          </div>
-          <div class="dashboard-status-box p-1 performance-box">
-            <div
-              class="dashboard-status px-2 py-3 d-flex justify-content-between"
-            >
-              <p class="m-0 main-label my-auto one-line">{{ $t("view") }}</p>
-              <p class="m-0 dashboard-status-value">
-                {{ performanceData.totalView | numeral("0,0") }}
-              </p>
-            </div>
-          </div>
-          <div class="dashboard-status-box p-1 performance-box">
-            <div
-              class="dashboard-status px-2 py-3 d-flex justify-content-between"
-            >
-              <p class="m-0 main-label my-auto one-line">{{ $t("order") }}</p>
-              <p class="m-0 dashboard-status-value">
-                {{ performanceData.totalOrder | numeral("0,0") }}
-              </p>
-            </div>
-          </div>
-          <div class="dashboard-status-box p-1 performance-box">
-            <div
-              class="dashboard-status px-2 py-3 d-flex justify-content-between"
-            >
-              <p class="m-0 main-label my-auto one-line">{{ $t("avgOrder") }}</p>
-              <p class="m-0 dashboard-status-value">
-                {{ performanceData.averageOrder | numeral("0,0") }}%
-              </p>
-            </div>
-          </div>
-        </div>
+        <h1 class="mr-sm-4 header-main p-3">{{ $t("todayPerformance") }}</h1>
+        <b-row no-gutters>
+          <b-col md="6"
+            ><LineChart
+              :xData="lineChartData.label"
+              :yData="lineChartData.data"
+          /></b-col>
+          <b-col md="6" class="m-auto">
+            <b-row v-if="performanceData" no-gutters class="p-2">
+              <b-col xl="6" class="dashboard-status-box p-1 performance-box">
+                <div
+                  class="dashboard-status px-2 py-3 d-flex justify-content-between w-100"
+                >
+                  <p class="m-0 main-label my-auto one-line w-50">
+                    {{ $t("revenue") }}
+                  </p>
+                  <p class="m-0 dashboard-status-value w-50">
+                    {{ performanceData.totalRevenue | numeral("0,0") }}
+                  </p>
+                </div>
+              </b-col>
+              <b-col xl="6" class="dashboard-status-box p-1 performance-box">
+                <div
+                  class="dashboard-status px-2 py-3 d-flex justify-content-between w-100"
+                >
+                  <p class="m-0 main-label my-auto one-line w-50">
+                    {{ $t("view") }}
+                  </p>
+                  <p class="m-0 dashboard-status-value w-50">
+                    {{ performanceData.totalView | numeral("0,0") }}
+                  </p>
+                </div>
+              </b-col>
+              <b-col xl="6" class="dashboard-status-box p-1 performance-box">
+                <div
+                  class="dashboard-status px-2 py-3 d-flex justify-content-between w-100"
+                >
+                  <p class="m-0 main-label my-auto w-50">
+                    {{ $t("order") }}
+                  </p>
+                  <p class="m-0 dashboard-status-value w-50">
+                    {{ performanceData.totalOrder | numeral("0,0") }}
+                  </p>
+                </div>
+              </b-col>
+              <b-col xl="6" class="dashboard-status-box p-1 performance-box">
+                <div
+                  class="dashboard-status px-2 py-3 d-flex justify-content-between w-100"
+                >
+                  <p class="m-0 main-label my-auto w-50">
+                    {{ $t("avgOrder") }}
+                  </p>
+                  <p class="m-0 dashboard-status-value w-50">
+                    {{ performanceData.averageOrder | numeral("0,0") }}%
+                  </p>
+                </div>
+              </b-col>
+            </b-row></b-col
+          >
+        </b-row>
       </div>
 
       <div class="mt-3 bg-white py-3 py-sm-0py-3">
-        <h1 class="mr-sm-4 header-main px-3 mb-3">{{ $t("upcomingCampaign") }}</h1>
+        <h1 class="mr-sm-4 header-main px-3 mb-3">
+          {{ $t("upcomingCampaign") }}
+        </h1>
         <div class="container">
           <div class="row">
             <div class="col-12">
-              <div v-if="campaignData.length != 0">
+              <div v-if="campaignData">
                 <slick ref="slick" v-bind="slickOptions" v-if="campaignData">
                   <div
                     v-for="(item, key) in campaignData"
@@ -173,6 +212,7 @@
                       <Timer
                         :startDate="item.startDateJoinCampaign"
                         :endDate="item.endDateJoinCampaign"
+                        @handleExpired="handleExpired"
                       />
                       <div
                         class="image"
@@ -190,18 +230,30 @@
                       </p>
                       <p class="two-lines">{{ item.shortDescription }}</p>
                       <div class="d-flex justify-content-between">
-                        <b-button variant="primary">{{ $t("openDb") }}</b-button>
+                        <router-link
+                          class="btn btn-primary mr-2"
+                          :to="`/campaign/info/${item.id}`"
+                          >{{ $t("openDb") }}</router-link
+                        >
 
-                        <div class="one-line ml-auto my-auto">
-                          <span class="mr-2">{{ $t("sellerDb") }} : {{ item.sellers }}</span>
-                          <span>{{ $t("products") }} : {{ item.totalProduct }}</span>
+                        <div class="ml-auto my-auto">
+                          <span class="mr-2"
+                            >{{ $t("sellerDb") }} :
+                            {{ item.totalPartner }}</span
+                          >
+                          <span
+                            >{{ $t("products") }} :
+                            {{ item.totalProduct }}</span
+                          >
                         </div>
                       </div>
                     </div>
                   </div>
                 </slick>
               </div>
-              <div v-else>2</div>
+              <div v-else class="text-center f-16 p-5">
+                {{ $t("noCampaign") }}
+              </div>
             </div>
           </div>
         </div>
@@ -211,11 +263,13 @@
 </template>
 
 <script>
-import Timer from "../dashboard/countDownTimer";
+import Timer from "../dashboard/components/countDownTimer";
+import LineChart from "../dashboard/components/LineChart";
 
 export default {
   components: {
     Timer,
+    LineChart,
   },
   data() {
     return {
@@ -235,6 +289,13 @@ export default {
         initialSlide: 0,
         autoplaySpeed: 3000,
         responsive: [
+           {
+            breakpoint: 1200,
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 1,
+            },
+          },
           {
             breakpoint: 769,
             settings: {
@@ -244,15 +305,23 @@ export default {
           },
         ],
       },
+      lineChartData: {
+        label: [],
+        data: [],
+      },
     };
   },
   created: async function () {
-    await this.DashboardStatus();
     await this.DashboardPerformance();
+    await this.DashboardStatus();
     await this.UpcomingCampaign();
     this.$isLoading = true;
   },
   methods: {
+    handleExpired: async function () { 
+      this.campaignData = null;
+      await this.UpcomingCampaign();
+    },
     DashboardStatus: async function () {
       let resData = await this.$callApi(
         "get",
@@ -275,6 +344,16 @@ export default {
       );
       if (resData.result == 1) {
         this.performanceData = resData.detail;
+
+        this.lineChartData.label = [];
+        this.lineChartData.data = [];
+
+        resData.detail.revenues.forEach(async (element, index) => {
+          this.lineChartData.label[index] = this.$moment(
+            element.createdTime
+          ).format("DD MMM");
+          this.lineChartData.data[index] = element.revenue;
+        });
       }
     },
     UpcomingCampaign: async function () {
@@ -330,9 +409,13 @@ export default {
   background-repeat: no-repeat;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1200px) {
   .performance-box {
-    width: 50% !important;
+    width: 100% !important;
+  }
+
+  .dashboard-status-box {
+    width: 50%;
   }
 }
 

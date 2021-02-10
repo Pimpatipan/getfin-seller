@@ -34,6 +34,13 @@ const CampaignProductList = () => import("@/views/pages/campaign/ProductList");
 const CampaignDetails = () => import("@/views/pages/campaign/Details");
 const Dashboard = () => import("@/views/pages/dashboard/Index");
 const RevenueProduct = () => import("@/views/pages/dashboard/RevenueProduct");
+const DashboardTable = () => import("@/views/pages/dashboard/TableList");
+const FAQ = () => import("@/views/pages/faq/Index");
+const BannerIndex = () => import("@/views/pages/settings/Index");
+const BannerDetails = () => import("@/views/pages/settings/Details");
+const BannerWyswygi = () => import("@/views/pages/settings/Wyswygi");
+const ResendOrderIndex = () => import("@/views/pages/resendorder/Index");
+const ResendOrderDetails = () => import("@/views/pages/resendorder/Details");
 
 const ChatIndex = () => import("@/views/pages/chat/Index");
 const Page404 = () => import("@/views/pages/Page404");
@@ -41,6 +48,9 @@ const Page500 = () => import("@/views/pages/Page500");
 const Login = () => import("@/views/pages/Login");
 const Register = () => import("@/views/pages/Register");
 const ForgetPassword = () => import("@/views/pages/ForgetPassword");
+const ResetPassword = () => import("@/views/pages/ResetPassword");
+const TermAndCon = () => import("@/views/pages/TermAndCon");
+const Privacy = () => import("@/views/pages/Privacy");
 
 Vue.use(Router);
 
@@ -66,8 +76,23 @@ export default new Router({
       component: ForgetPassword
     },
     {
+      path: "/resetpassword/:token",
+      name: "Reset Password",
+      component: ResetPassword
+    },
+    {
+      path: "/termandcondition",
+      name: "Term and Conditions",
+      component: TermAndCon
+    },
+    {
+      path: "/privacypolicy",
+      name: "Privacy Policy",
+      component: Privacy
+    },
+    {
       path: "/",
-      redirect: "/product",
+      redirect: "/dashboard/productoverview",
       name: "Home",
       component: TheContainer,
       meta: { requiresAuth: true },
@@ -79,7 +104,7 @@ export default new Router({
         //   meta: { requiresAuth: true },
         // },
         {
-          path: "/dashboard",
+          path: "/dashboard/productoverview",
           name: "Dashboard",
           component: Dashboard,
           meta: { requiresAuth: true }
@@ -88,6 +113,24 @@ export default new Router({
           path: "/dashboard/revenueproduct",
           name: "Revenue Product",
           component: RevenueProduct,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/dashboard/performance",
+          name: "Performance",
+          component: DashboardTable,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/dashboard/campaign",
+          name: "Campaign",
+          component: DashboardTable,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/dashboard/productperformance",
+          name: "Product Performance",
+          component: DashboardTable,
           meta: { requiresAuth: true }
         },
         {
@@ -141,13 +184,13 @@ export default new Router({
             },
             {
               path: "/finance/order",
-              name: "Order overviews",
+              name: "Order Overview",
               component: FinanceOrderOverview,
               meta: { requiresAuth: true }
             },
             {
               path: "/finance/transaction",
-              name: "Transaction overviews",
+              name: "Transaction Overview",
               component: FinanceTransactionOverview,
               meta: { requiresAuth: true }
             }
@@ -223,6 +266,18 @@ export default new Router({
           meta: { requiresAuth: true }
         },
         {
+          path: "/resendorder",
+          name: "Resend Order Overview",
+          component: ResendOrderIndex,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/resendorder/details/:id",
+          name: "Resend Order Details",
+          component: ResendOrderDetails,
+          meta: { requiresAuth: true }
+        },
+        {
           path: "/return",
           name: "Return List",
           component: ReturnIndex,
@@ -250,6 +305,48 @@ export default new Router({
           path: "/chat",
           name: "Chat",
           component: ChatIndex,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/faq",
+          name: "FAQ List",
+          component: FAQ,
+          meta: { requiresAuth: true }
+        },
+         {
+          path: "/faq",
+          name: "FAQ List",
+          component: FAQ,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/banner",
+          name: "Banner List",
+          component: BannerIndex,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/banner/details/:id",
+          name: "Banner Details",
+          component: BannerDetails,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/bannerpromotion",
+          name: "Banner Promotion List",
+          component: BannerIndex,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/bannerpromotion/details/:id",
+          name: "Banner Promotion Details",
+          component: BannerDetails,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: "/aboutus",
+          name: "About Us",
+          component: BannerWyswygi,
           meta: { requiresAuth: true }
         },
         // {

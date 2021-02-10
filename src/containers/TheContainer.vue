@@ -1,6 +1,6 @@
 <template>
   <div class="c-app">
-    <TheSidebar />
+    <TheSidebar v-if="forcerefresh" />
     <div class="c-wrapper">
       <TheHeader />
       <div class="c-body">
@@ -34,16 +34,42 @@ import TheSidebar from "./TheSidebar";
 import TheHeader from "./TheHeader";
 import TheFooter from "./TheFooter";
 import Talk from "talkjs";
+import { mapGetters } from "vuex";
 
 export default {
   name: "TheContainer",
   components: {
     TheSidebar,
     TheHeader,
-    TheFooter,
+    TheFooter
   },
-  mounted: function () {
-    Talk.ready.then(function () {
+  data() {
+    return {
+      forcerefresh: true
+    };
+  },
+  created() {},
+
+  watch: {
+    refreshFlag: function(value) {
+      if (value == true) {
+        this.forcerefresh = false;
+        this.$nextTick(() => {
+          this.forcerefresh = true;
+        });
+      }
+    }
+  },
+  computed: {
+    ...mapGetters({
+      refreshFlag: "getRefreshMenu"
+    })
+  },
+  mounted: function() {
+    this.$nextTick(() => {
+      this.$store.dispatch("getActiveData");
+    });
+    Talk.ready.then(function() {
       //   var me = new Talk.User({
       //     id: parseInt(Math.random() * 500000).toString(),
       //     name: "Alice",
@@ -83,7 +109,7 @@ export default {
       //     showChatHeader: false,
       //   });
     });
-  },
+  }
 };
 </script>
 
@@ -96,5 +122,4 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
-
 </style>

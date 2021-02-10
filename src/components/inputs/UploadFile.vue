@@ -6,49 +6,59 @@
           {{ textFloat }}
           <span v-if="isRequired" class="text-danger">*</span>
         </label>
-        <div class="d-flex justify-content-center align-items-center">
-          <div class="w-100 display-only">
-            <input
-              :class="['custom-input']"
-              :type="type"
-              :placeholder="placeholder"
-              :name="name"
-              :required="required"
-              :value="fileNameDisplay"
-              :size="size"
-              disabled
-            />
-            <font-awesome-icon
-              icon="times-circle"
-              class="text-secondary delete-icon pointer"
-              v-if="fileName"
-              @click="deleteImage"
-            />
+        <div class="d-flex">
+          <div class="w-100 d-flex justify-content-center align-items-center">
+            <div class="w-100 display-only">
+              <input
+                :class="['custom-input']"
+                :type="type"
+                :placeholder="placeholder"
+                :name="name"
+                :required="required"
+                :value="fileNameDisplay"
+                :size="size"
+                disabled
+              />
+              <font-awesome-icon
+                icon="times-circle"
+                class="text-secondary delete-icon pointer"
+                v-if="fileName"
+                @click="deleteImage"
+              />
+            </div>
+            <label class="mb-0 btn-main" :size="size">
+              <input
+                type="file"
+                v-on:change="handleFileChange"
+                :required="required"
+                :name="name"
+                ref="input"
+                @click="clearValue"
+              />
+              <font-awesome-icon
+                icon="file-upload"
+                color="white"
+                class="bg-icon mr-2"
+                :size="size"
+              />Choose file
+            </label>
           </div>
-          <label class="mb-0 btn-main" :size="size">
-            <input
-              type="file"
-              v-on:change="handleFileChange"
-              :required="required"
-              :name="name"
-              ref="input"
-              @click="clearValue"
-            />
+          <b-button
+            type="button"
+            class="btn-download"
+            :disabled="fileName == '' || !fileName"
+            variant="link"
+            @click.prevent="downloadItem(fileName)"
+          >
             <font-awesome-icon
-              icon="file-upload"
+              icon="file-download"
               color="white"
-              class="bg-icon mr-2"
+              class="bg-icon"
               :size="size"
-            />Choose file
-          </label>
+          /></b-button>
         </div>
       </div>
-      <!-- <b-button
-        type="button"
-        class="btn-download-file"
-        variant="link"
-        @click.prevent="downloadItem(downloadPath)"
-      >{{fileName}}</b-button>-->
+
       <p class="detail-format">{{ text }}</p>
       <div v-if="v && v.$error">
         <span class="text-danger" v-if="v.required == false">{{
@@ -56,6 +66,7 @@
         }}</span>
       </div>
       <ModalAlertError ref="modalAlertError" :text="modalMessage" />
+      <ModalLoading ref="modalLoading" :hasClose="false" />
     </div>
   </div>
 </template>
@@ -63,66 +74,68 @@
 <script>
 import axios from "axios";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
+import ModalLoading from "@/components/modal/alert/ModalLoading";
 export default {
   props: {
     textFloat: {
       required: true,
-      type: String,
+      type: String
     },
     text: {
       required: true,
-      type: String,
+      type: String
     },
     format: {
       required: true,
-      type: String,
+      type: String
     },
     fileName: {
       required: true,
-      type: String,
+      type: String
     },
     required: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     name: {
       required: false,
-      type: String,
+      type: String
     },
     isRequired: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     isValidate: {
       required: false,
-      type: Boolean,
+      type: Boolean
     },
     placeholder: {
       required: true,
-      type: String,
+      type: String
     },
     size: {
       required: false,
-      type: String,
+      type: String
     },
     downloadPath: {
       required: false,
-      type: String,
+      type: String
     },
     v: {
       required: false,
-      type: Object,
-    },
+      type: Object
+    }
   },
   components: {
     ModalAlertError,
+    ModalLoading
   },
   data() {
     return {
       file: "",
       value: "",
       type: {
-        all: ["image/jpeg", "image/png", "application/pdf", ""],
+        all: ["image/jpeg", "image/png", "application/pdf", "video/mp4"],
         file: ["image/jpeg", "image/png", "application/pdf"],
         pdf: ["application/pdf"],
         png: ["image/png"],
@@ -130,8 +143,8 @@ export default {
         video: ["video/mp4"],
         excel: [
           "application/vnd.ms-excel",
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        ],
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ]
       },
       modalMessage: "",
       error: "",
@@ -141,6 +154,7 @@ export default {
       msgModal: null,
       modalAlertShow: false,
       isSuccess: false,
+      dataURL: ""
     };
   },
   computed: {
@@ -157,11 +171,11 @@ export default {
       } else {
         return this.fileName;
       }
-    },
+    }
   },
   methods: {
     clearValue(e) {
-      e.target.value = ''
+      e.target.value = "";
     },
     handleFileChange(e) {
       this.hasError = false;
@@ -169,6 +183,8 @@ export default {
       var _validFileExtensions = this.type.file;
       if (this.format == "image") {
         _validFileExtensions = this.type.image;
+      } else if (this.format == "all") {
+        _validFileExtensions = this.type.all;
       }
       this.value = e.target.files[0];
       if (e.target.files.length) {
@@ -190,31 +206,63 @@ export default {
       }
       //this.$emit("onFileChange", this.value);
     },
+    downloadImage: async function(path) {
+      this.$nextTick(() => {
+        var img = new Image();
+        img.src = path;
+        img.crossOrigin = "Anonymous";
+
+        img.onload = () => {
+          var canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          this.dataURL = canvas.toDataURL();
+
+          var fileLink = document.createElement("a");
+          fileLink.href = this.dataURL;
+          fileLink.setAttribute(
+            "download",
+            `${this.fileName.split("/").pop()}`
+          );
+          document.body.appendChild(fileLink);
+          fileLink.click();
+          this.$refs.modalLoading.hide();
+        };
+      });
+    },
     downloadItem: async function(path) {
       let pathFile = path;
-      axios({
-        url: pathFile,
-        method: "GET",
-        headers: null,
-        responseType: "blob",
-      }).then(response => {
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
+      this.$refs.modalLoading.show();
 
-        fileLink.href = fileURL;
-        fileLink.setAttribute(
-          "download",
-          `download.${response.data.type.split("/").pop(-1)}`
-        );
-        document.body.appendChild(fileLink);
-        fileLink.click();
-      });
+      if (path.split(".").pop() == "jpg" || path.split(".").pop() == "png") {
+        await this.downloadImage(path);
+      } else {
+        axios({
+          url: pathFile,
+          method: "GET",
+          headers: null,
+          responseType: "blob"
+        }).then(response => {
+          this.$refs.modalLoading.hide();
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+          var fileLink = document.createElement("a");
+          fileLink.href = fileURL;
+          fileLink.setAttribute(
+            "download",
+            `${this.fileName.split("/").pop()}`
+          );
+          document.body.appendChild(fileLink);
+          fileLink.click();
+        });
+      }
     },
     deleteImage() {
       this.$emit("delete", true);
       this.hasImage = false;
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -294,7 +342,7 @@ input[size="lg"].custom-input {
   border-radius: 10px;
 }
 .btn-main {
-  width: 120px;
+  min-width: 120px;
   text-align: center;
   height: 37px;
   vertical-align: middle;

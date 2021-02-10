@@ -169,10 +169,10 @@
               ><div class="w-100"><hr /></div
             ></b-col>
           </b-row>
-                <b-row>
-            <b-col>
+          <b-row>
+            <b-col v-if="note != ''">
               <label class="font-weight-bold">{{ $t("noteFromAdmin") }}</label>
-              <p>{{ note }}</p> 
+              <p>{{ note }}</p>
             </b-col>
           </b-row>
           <b-row class="">
@@ -193,12 +193,14 @@
     <!-- Modal -->
     <ModalAlert ref="modalAlert" :text="modalMessage" />
     <ModalAlertError ref="modalAlertError" :text="modalMessage" />
+    <ModalLoading ref="modalLoading" :hasClose="false" />
   </div>
 </template>
 
 <script>
 import ModalAlert from "@/components/modal/alert/ModalAlert";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
+import ModalLoading from "@/components/modal/alert/ModalLoading";
 import InputText from "../../../profile/components/inputs/InputText";
 import InputSelect from "../../../profile/components/inputs/InputSelect";
 import { required } from "vuelidate/lib/validators";
@@ -209,7 +211,7 @@ export default {
       required: false,
       type: Object,
     },
-     note: {
+    note: {
       required: false,
       type: String,
     },
@@ -217,6 +219,7 @@ export default {
   components: {
     ModalAlert,
     ModalAlertError,
+    ModalLoading,
     InputText,
     InputSelect,
   },
@@ -243,7 +246,7 @@ export default {
           email: "",
         },
       },
-       noteAdmin: "",
+      noteAdmin: "",
     };
   },
   validations: {
@@ -260,7 +263,7 @@ export default {
       },
     },
   },
-  created: async function() {
+  created: async function () {
     this.form.warehouseAddress = this.dataObject;
     if (this.form.warehouseAddress.provinceId === 0) {
       await this.getProvinces(1);
@@ -269,7 +272,7 @@ export default {
     }
   },
   watch: {
-    dataObject: function() {
+    dataObject: function () {
       this.form.warehouseAddress = this.dataObject;
     },
     note: function () {
@@ -277,7 +280,10 @@ export default {
     },
   },
   methods: {
-    isNumber: function(evt) {
+    reloadData() {
+      this.$emit("reloadData");
+    },
+    isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
       if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -297,10 +303,10 @@ export default {
       this.filename = null;
       this.isDisable = true;
     },
-    getProvinces: async function(flag) {
+    getProvinces: async function (flag) {
       let provinces = await this.$callApi(
         "get",
-        `https://dev-getfin-api.dosetech.co/api/Address/Provinces`,
+        `${this.$baseUrl}/api/Address/Province`,
         null,
         this.$headers,
         null
@@ -318,15 +324,14 @@ export default {
         }
       }
     },
-    getDistrict: async function(flag) {
+    getDistrict: async function (flag) {
       let provinceId = this.form.warehouseAddress.provinceId;
       if (!this.form.warehouseAddress.provinceId) {
         provinceId = 0;
       }
       let district = await this.$callApi(
         "get",
-        `https://dev-getfin-api.dosetech.co/api/Address/Districts/` +
-          provinceId,
+        `${this.$baseUrl}/api/Address/District/` + provinceId,
         null,
         this.$headers,
         null
@@ -343,15 +348,14 @@ export default {
         }
       }
     },
-    getSubDistrict: async function(flag) {
+    getSubDistrict: async function (flag) {
       let districtId = this.form.warehouseAddress.districtId;
       if (!this.form.warehouseAddress.districtId) {
         districtId = 0;
       }
       let subdistrict = await this.$callApi(
         "get",
-        `https://dev-getfin-api.dosetech.co/api/Address/SubDistricts/` +
-          districtId,
+        `${this.$baseUrl}/api/Address/SubDistrict/` + districtId,
         null,
         this.$headers,
         null
@@ -366,15 +370,15 @@ export default {
       }
     },
 
-    handleChangeProvince: async function(value) {
+    handleChangeProvince: async function (value) {
       this.form.warehouseAddress.provinceId = value;
       this.getDistrict(1);
     },
-    handleChangeDistrict: async function(value) {
+    handleChangeDistrict: async function (value) {
       this.form.warehouseAddress.districtId = value;
       this.getSubDistrict(1);
     },
-    handleChangeSubDistrict: async function(value) {
+    handleChangeSubDistrict: async function (value) {
       this.form.warehouseAddress.subdistrictId = value;
     },
     onFileChange(file) {
@@ -387,7 +391,7 @@ export default {
         this.form.file = reader.result;
       };
     },
-    checkForm: async function(flag) {
+    checkForm: async function (flag) {
       this.$v.form.$touch();
       if (this.$v.form.$error) {
         return;
@@ -397,7 +401,9 @@ export default {
       this.flag = flag;
       this.submit();
     },
-    submit: async function() {
+    submit: async function () {
+      this.$refs.modalLoading.show();
+
       let data = await this.$callApi(
         "patch",
         `${this.$baseUrl}/api/Profile/General/WarehouseAddress`,
@@ -405,14 +411,14 @@ export default {
         this.$headers,
         this.form.warehouseAddress
       );
-
+      this.$refs.modalLoading.hide();
       this.modalMessage = data.message;
       this.isDisable = false;
       if (data.result == 1) {
         this.$refs.modalAlert.show();
-        // setTimeout(function() {
-        //   window.location.reload();
-        // }, 3000);
+     setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.$hasChange = false;
         this.reloadData();
       } else {
@@ -423,8 +429,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-</style>

@@ -4,7 +4,9 @@
       <b-container class="container-box">
         <b-row class="no-gutters">
           <b-col>
-            <h1 class="font-weight-bold header-main text-uppercase">
+            <h1
+              class="font-weight-bold header-main text-uppercase text-center text-sm-left"
+            >
               {{ $t("returnDetails") }}
             </h1>
           </b-col>
@@ -13,32 +15,45 @@
         <b-row class="no-gutters mt-2">
           <b-col>
             <div class="bg-white p-3 mb-3">
-              <p class="font-weight-bold text-center text-lg-left mb-2">
-                {{ $t("orderNo") }} :
-                <span class="font-weight-normal">
-                  <router-link :to="'/order/details/' + form.order.id">
-                    <span
-                      v-if="form.order.invoiceNo != ''"
-                      class="text-underline"
+              <div class="row">
+                <div class="col-sm-6">
+                  <p class="font-weight-bold text-center text-sm-left mb-2">
+                    {{ $t("orderNo") }} :
+                    <span class="font-weight-normal">
+                      <router-link :to="'/order/details/' + form.order.id">
+                        <span
+                          v-if="form.order.invoiceNo != ''"
+                          class="text-underline"
+                        >
+                          {{ form.order.invoiceNo }}
+                        </span>
+                        <span v-else class="text-underline">{{
+                          form.order.quotationNo
+                        }}</span>
+                      </router-link></span
                     >
-                      {{ form.order.invoiceNo }}
-                    </span>
-                    <span v-else class="text-underline">{{
-                      form.order.quotationNo
-                    }}</span>
-                  </router-link></span
-                >
-              </p>
+                  </p>
 
-              <p class="font-weight-bold text-center text-lg-left mb-2">
-                {{ $t("dateTime") }} :
-                <span class="font-weight-normal">
-                  {{
-                    new Date(form.order.createdTime)
-                      | moment("DD MMM YYYY (HH:mm)")
-                  }}</span
-                >
-              </p>
+                  <p class="font-weight-bold text-center text-sm-left mb-2">
+                    {{ $t("dateTime") }} :
+                    <span class="font-weight-normal">
+                      {{
+                        new Date(form.order.createdTime)
+                          | moment("DD MMM YYYY (HH:mm)")
+                      }}</span
+                    >
+                  </p>
+                </div>
+                <div class="col-sm-6 text-center text-sm-right">
+                  <span
+                    class="text-underline pointer"
+                    @click="$bvModal.show('showBookBankModal')"
+                    v-if="form.bookBankImageUrl != ''"
+                  >
+                    {{ $t("seeBookBank") }}</span
+                  >
+                </div>
+              </div>
             </div>
 
             <b-row>
@@ -57,6 +72,11 @@
                     >
                     <b-col class="mb-2 mb-sm-0" xl="8">
                       {{ form.order.firstname }} {{ form.order.lastname }}
+                      <span
+                        class="f-14 text-blue ml-3 text-underline"
+                        @click="directToChat"
+                        >{{ $t("sendMsg") }}</span
+                      >
                     </b-col>
 
                     <b-col xl="4" class="font-weight-bold"
@@ -92,11 +112,14 @@
                   <b-row class>
                     <b-col class="my-2 mb-sm-0" md="12">
                       {{ form.order.shippingAddress.firstname }}
-                      {{ form.order.shippingAddress.lastname }}</b-col
-                    >
+                      {{ form.order.shippingAddress.lastname }}
+                    </b-col>
 
                     <b-col class="my-2 mb-sm-0" md="12">
                       {{ form.order.shippingAddress.address }}
+                      {{ form.order.shippingAddress.building }}
+                      {{ form.order.shippingAddress.alley }}
+                      {{ form.order.shippingAddress.road }}
                       {{ form.order.shippingAddress.subDistrict }}
                       {{ form.order.shippingAddress.district }}
                       {{ form.order.shippingAddress.province }}
@@ -127,6 +150,9 @@
 
                     <b-col class="my-2 mb-sm-0" md="12">
                       {{ form.order.billingAddress.address }}
+                      {{ form.order.billingAddress.building }}
+                      {{ form.order.billingAddress.alley }}
+                      {{ form.order.billingAddress.road }}
                       {{ form.order.billingAddress.subDistrict }}
                       {{ form.order.billingAddress.district }}
                       {{ form.order.billingAddress.province }}
@@ -143,21 +169,28 @@
 
             <div class="bg-white mt-3">
               <b-row class="p-3">
-                <b-col sm="3" class="text-center text-sm-left">
+                <b-col sm="4" class="text-center text-sm-left">
                   <p class="font-weight-bold my-2">{{ $t("returnDetails") }}</p>
                 </b-col>
-                <b-col class="text-center text-sm-right" sm="9">
+                <b-col class="text-center text-sm-right m-auto" sm="8">
+                  <a
+                    v-if="form.returnStatusId == 1"
+                    href="#"
+                    @click="updateReturnStatus(3)"
+                    class="f-14 text-underline mr-2"
+                    >{{ $t("reject") }}</a
+                  >
+                  <span
+                    v-else
+                    href="#"
+                    class="f-14 text-underline text-grey mr-2"
+                    >{{ $t("reject") }}</span
+                  >
                   <b-button
-                    :disabled="form.orderItems[0].returnStatusId != 1"
+                    :disabled="form.returnStatusId != 1"
                     class="btn-details-set btn-main mr-1 btn-return"
                     @click="updateReturnStatus(2)"
                     >{{ $t("approve") }}</b-button
-                  >
-                  <b-button
-                    :disabled="form.orderItems[0].returnStatusId != 1"
-                    @click="updateReturnStatus(3)"
-                    class="btn-details-set btn-secondary btn-return"
-                    >{{ $t("reject") }}</b-button
                   >
                 </b-col>
               </b-row>
@@ -183,6 +216,7 @@
                     <div class="d-flex">
                       <div
                         v-for="(item, index) in form.orderItems[0].attribute"
+                        :key="index"
                         class="config-tag mr-1 mt-1"
                       >
                         {{ item.label }} : {{ item.option.label }}
@@ -192,7 +226,13 @@
                 </div>
                 <div class="col-3 text-center">
                   <p
-                    class="text-success return-status"
+                    class="text-warning return-status"
+                    v-if="form.orderItems[0].returnStatusId == 1"
+                  >
+                    {{ $t("inprogress") }}
+                  </p>
+                  <p
+                    class="text-warning return-status"
                     v-if="form.orderItems[0].returnStatusId == 2"
                   >
                     {{ $t("approve") }}
@@ -203,8 +243,11 @@
                   >
                     {{ $t("reject") }}
                   </p>
-                  <p class="text-warning return-status" v-else>
-                    {{ $t("inprogress") }}
+                  <p
+                    class="text-success return-status"
+                    v-else-if="form.orderItems[0].returnStatusId == 4"
+                  >
+                    {{ $t("returned") }}
                   </p>
                 </div>
               </div>
@@ -230,13 +273,21 @@
                     v-for="(item, index) in form.orderItems[0]
                       .returnOrderProductImage"
                     :key="index"
-                    class="img-doc d-inline-block mr-2 return-pic pointer my-3"
+                    class="img-doc d-inline-block mr-2 return-pic pointer my-3 b-contain"
                   ></div>
 
                   <p class="mb-1">
                     {{ $t("returnReason") }}:
                     <span v-if="form.orderItems[0].returnReason != null">{{
                       form.orderItems[0].returnReason
+                    }}</span>
+                    <span v-else>-</span>
+                  </p>
+
+                  <p class="mb-1">
+                    {{ $t("note") }}:
+                    <span v-if="form.orderItems[0].note != null">{{
+                      form.orderItems[0].note
                     }}</span>
                     <span v-else>-</span>
                   </p>
@@ -265,41 +316,41 @@
                     @click="showPreview(item.path)"
                     v-for="(item, index) in form.returnOrderDetailImage"
                     :key="index"
-                    class="img-doc d-inline-block mr-2 return-pic pointer my-3"
+                    class="img-doc d-inline-block mr-2 return-pic pointer my-3 b-contain"
                   ></div>
 
                   <p class="mb-1">
                     {{ $t("shippingMethod") }}:
-                    <span v-if="form.orderItems[0].shippingType != null">{{
-                      form.orderItems[0].shippingType
+                    <span v-if="form.shippingType != null">{{
+                      form.shippingType
                     }}</span>
                     <span v-else>-</span>
                   </p>
                   <p class="mb-1">
                     {{ $t("trackingNo") }}:
-                    <span v-if="form.orderItems[0].trackingNumber != null">{{
-                      form.orderItems[0].trackingNumber
+                    <span v-if="form.trackingNumber != null">{{
+                      form.trackingNumber
                     }}</span>
                     <span v-else>-</span>
                   </p>
                   <p class="mb-1">
                     {{ $t("bankName") }}:
-                    <span v-if="form.orderItems[0].bankName != null">{{
-                      form.orderItems[0].bankName
+                    <span v-if="form.bankName != null">{{
+                      form.bankName
                     }}</span>
                     <span v-else>-</span>
                   </p>
                   <p class="mb-1">
                     {{ $t("bankAccountNo") }}:
-                    <span v-if="form.orderItems[0].bankAccountNo != null">{{
-                      form.orderItems[0].bankAccountNo
+                    <span v-if="form.bankAccountNo != null">{{
+                      form.bankAccountNo
                     }}</span>
                     <span v-else>-</span>
                   </p>
                   <p class="mb-1">
                     {{ $t("bankAccountName") }}:
-                    <span v-if="form.orderItems[0].bankAccountName != null">{{
-                      form.orderItems[0].bankAccountName
+                    <span v-if="form.bankAccountName != null">{{
+                      form.bankAccountName
                     }}</span>
                     <span v-else>-</span>
                   </p>
@@ -349,21 +400,20 @@
 
               <b-row class="no-gutters p-3">
                 <b-col md="4">
-                  <b-button
-                    href="/return"
-                    :disabled="isDisable"
-                    class="btn-details-set btn-secondary text-uppercase"
-                    >{{ $t("cancel") }}</b-button
-                  >
+                  <router-link to="/return">
+                    <b-button
+                      :disabled="isDisable"
+                      class="btn-details-set btn-secondary text-uppercase"
+                      >{{ $t("cancel") }}</b-button
+                    >
+                  </router-link>
                 </b-col>
                 <b-col md="8" class="text-sm-right">
                   <button
                     :disabled="isDisable"
                     type="button"
                     class="btn btn-details-set btn-success ml-md-2 text-uppercase"
-                    @click="
-                      updateReturnStatus(form.orderItems[0].returnStatusId)
-                    "
+                    @click="updateReturnStatus(form.returnStatusId)"
                   >
                     {{ $t("save") }}
                   </button>
@@ -402,6 +452,42 @@
               <div
                 class="preview-box b-contain m-auto border-0"
                 v-bind:style="{ 'background-image': 'url(' + img + ')' }"
+              ></div>
+            </b-col>
+          </b-row>
+        </b-container>
+      </div>
+    </b-modal>
+
+    <b-modal
+      id="showBookBankModal"
+      ref="showBookBankModal"
+      hide-header
+      hide-footer
+      centered
+      body-class="p-4"
+      size="md"
+    >
+      <div class="modal-header border-0 px-0 pt-0">
+       <h3 class="font-weight-bold">{{ $t("bookBank") }}</h3>
+        <button
+          type="button"
+          aria-label="Close"
+          class="close"
+          @click="$bvModal.hide('showBookBankModal')"
+        >
+          ×
+        </button>
+      </div>
+      <div>
+        <b-container class="p-0">
+          <b-row>
+            <b-col>
+              <div
+                class="preview-box b-contain m-auto border-0"
+                v-bind:style="{
+                  'background-image': 'url(' + form.bookBankImageUrl + ')',
+                }"
               ></div>
             </b-col>
           </b-row>
@@ -470,6 +556,14 @@ export default {
     this.$isLoading = true;
   },
   methods: {
+    directToChat() {
+      this.$store.commit("setOtherProfile", this.form);
+      setTimeout(() => {
+        this.$router.push({
+          path: "/chat",
+        });
+      }, 500);
+    },
     showPreview(img) {
       this.img = img;
       this.$refs["showPreviewModal"].show();
@@ -500,12 +594,11 @@ export default {
         note: this.note,
         orderItems: [
           {
-            productId: this.form.orderItems[0].productId,
-            returnOrderId: this.form.orderItems[0].returnOrderId,
-            returnStatusId: id,
+            productId: this.form.productId,
+            returnOrderId: this.form.returnOrderId,
           },
         ],
-        orderStatusId: this.form.orderStatusId,
+        orderStatusId: id,
       };
 
       let resData = await this.$callApi(
@@ -518,8 +611,12 @@ export default {
       this.modalMessage = resData.message;
       this.isDisable = false;
       this.$refs.modalLoading.hide();
+       this.$store.dispatch("getActiveData");
       if (resData.result == 1) {
         this.$refs.modalAlert.show();
+        setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.note = "";
         this.getData();
       } else {
@@ -539,6 +636,9 @@ export default {
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
   width: 100%;
+}
+.text-grey {
+  color: gray;
 }
 
 /* .return-pic {
@@ -565,6 +665,7 @@ div {
   color: white;
   border-radius: 15px;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 @media (max-width: 1200px) {

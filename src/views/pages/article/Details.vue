@@ -1,15 +1,15 @@
 <template>
-  <div >
-    <b-container class="container-box">
+  <div>
+    <b-container class="container-box" v-if="$isLoading">
       <b-row class="no-gutters">
         <b-col>
           <h1 class="font-weight-bold header-main text-uppercase mb-3">
-            {{ (id == 0 ? $t("add") : $t("edit")) }}{{ $t("article") }}
+            {{ id == 0 ? $t("add") : $t("edit") }}{{ $t("article") }}
           </h1>
         </b-col>
       </b-row>
 
-      <div class="bg-white p-3" v-if="$isLoading">
+      <div class="bg-white p-3">
         <b-row class="pl-1">
           <b-col cols="6">
             <div class="panel d-flex align-items-md-center">
@@ -153,7 +153,7 @@
           </b-col>
           <b-col md="6">
             <div
-              class="preview-box b-contain"
+              class="preview-box b-contain ratio-4-3-pb"
               v-if="coverImgType == 1"
               v-bind:style="{ 'background-image': 'url(' + showPreview + ')' }"
             >
@@ -185,7 +185,7 @@
               v-bind:class="[languageActive == item.languageId ? '' : 'd-none']"
             >
               <TextEditor
-               v-if="$isLoading"
+                v-if="$isLoading"
                 :textFloat="$t('desc')"
                 :rows="8"
                 :img="imageLogoLang"
@@ -218,6 +218,7 @@
             <b-form-checkbox
               size="lg"
               class="ml-2"
+              :disabled="selected.length == 0"
               v-model="displayOnlySelected"
               @change="onChangeShowSelected($event)"
               ><label for="" class="">{{
@@ -302,6 +303,7 @@
             <b-row class="mt-2">
               <b-col>
                 <InputSelect
+                  v-if="refresh"
                   class="mb-4"
                   :title="$t('category')"
                   name="Cate"
@@ -367,7 +369,13 @@
                     ></div>
                   </template>
                   <template v-slot:cell(price)="data">
-                    <span> ฿ {{ data.item.price | numeral("0,0.00") }} </span>
+                    <p class="m-0" v-if="data.item.productTypeId == 1">
+                      ฿ {{ data.item.price | numeral("0,0.00") }}
+                    </p>
+                    <p class="m-0" v-else>
+                      ฿ {{ data.item.minPrice | numeral("0,0.00") }} - ฿
+                      {{ data.item.maxPrice | numeral("0,0.00") }}
+                    </p>
                   </template>
                   <template v-slot:cell(stock)="data">
                     <span> {{ data.item.stock | numeral("0") }} </span>
@@ -405,8 +413,6 @@
                 @change="pagination"
                 align="center"
               ></b-pagination>
-
-            
             </div>
 
             <b-form-select
@@ -457,11 +463,10 @@
               @click="openModalDelete(form.article.translationList[0].name)"
               >{{ $t("delete") }}</b-button
             >
-            <b-button
-              href="/article"
-              :disabled="isDisable"
-              class="btn-details-set"
-              >{{ $t("cancel") }}</b-button
+            <router-link to="/article">
+              <b-button :disabled="isDisable" class="btn-details-set">{{
+                $t("cancel")
+              }}</b-button></router-link
             >
           </b-col>
           <b-col md="6" class="text-sm-right">
@@ -527,7 +532,7 @@ export default {
     ModalAlert,
     ModalAlertError,
     ModalAlertConfirm,
-    ModalLoading
+    ModalLoading,
   },
   data() {
     return {
@@ -668,8 +673,9 @@ export default {
         categoryId: [],
         status: [0, 1],
       },
-      selectedCategoryId: 0,
+      selectedCategoryId: null,
       allItems: [],
+      refresh: true,
       form: {
         article: {
           id: 0,
@@ -733,6 +739,7 @@ export default {
   },
   created: async function () {
     await this.getDatas();
+    await this.changeLanguage(1, 0);
   },
   watch: {
     selected: function () {
@@ -749,7 +756,12 @@ export default {
           this.allItems.forEach((element, index) => {
             this.selected.push(element.id);
           });
-          if (this.displayOnlySelected) this.onClearFilter();
+          if (this.displayOnlySelected) {
+            this.displayOnlySelected = false;
+            this.onClearFilter();
+          } else {
+            this.onClearFilter();
+          }
         }
       } else {
         if (!this.selectedAll) {
@@ -838,7 +850,7 @@ export default {
       );
     },
     onChangeShowSelected(value) {
-      this.filter.pageNo = 1;
+      this.onClearFilter();
       if (value == true) this.filter.productId = this.selected;
       else this.filter.productId = [];
 
@@ -854,7 +866,7 @@ export default {
         this.$headers,
         null
       );
-     
+
       if (languages.result == 1) {
         this.languageList = languages.detail;
         this.changeLanguage(1, 0);
@@ -899,12 +911,13 @@ export default {
 
       if (this.form.article.isSameLanguage) {
         this.imageLogoLang = "";
+        this.languageActive = this.form.article.mainLanguageId;
       } else {
         var index = this.languageList
           .map(function (x) {
             return x.id;
           })
-          .indexOf(this.languageActive);
+          .indexOf(this.form.article.mainLanguageId);
         this.imageLogoLang = this.languageList[index].imageUrl;
       }
     },
@@ -935,8 +948,9 @@ export default {
       }
 
       if (catlist.result == 1) {
-        let list = [{ id: 0, name: `${this.$t("selectCategory")}` }];
+        let list = [{ id: null, name: `${this.$t("selectCategory")}` }];
         let datalist = catlist.detail;
+        this.catLists = [];
         this.catLists = list.concat(datalist);
       }
     },
@@ -963,8 +977,10 @@ export default {
       }
     },
     changeLanguage(id, index) {
-      this.languageActive = id;
-      this.imageLogoLang = this.languageList[index].imageUrl;
+      if (!this.form.article.isSameLanguage) {
+        this.languageActive = id;
+        this.imageLogoLang = this.languageList[index].imageUrl;
+      }
     },
     onImageChange(img) {
       this.isLoadingImage = true;
@@ -1066,10 +1082,13 @@ export default {
         this.$refs.modalAlert.show();
 
         if (this.flag == 1) {
-          setTimeout(function () {
-            window.location.href = "/article";
+          setTimeout(() => {
+            this.$router.push({ path: `/article` });
           }, 3000);
         } else {
+          setTimeout(() => {
+            this.$refs.modalAlert.hide();
+          }, 3000);
           if (this.$route.params.id > 0) {
             this.getDatas();
           } else {
@@ -1090,7 +1109,7 @@ export default {
       this.getList();
     },
     onClearFilter() {
-      this.selectedCategoryId = 0;
+      this.selectedCategoryId = null;
       this.filter = {
         pageNo: 1,
         perPage: 10,
@@ -1099,6 +1118,12 @@ export default {
         categoryId: [],
         status: [0, 1],
       };
+      this.refresh = false;
+
+      this.$nextTick(() => {
+        this.refresh = true;
+      });
+
       this.$refs.filterSidebar.hide(true);
       this.getList();
     },
@@ -1125,8 +1150,8 @@ export default {
       this.modalMessage = resData.message;
       if (resData.result == 1) {
         this.$refs.modalAlert.show();
-        setTimeout(function () {
-          window.location.href = "/article";
+        setTimeout(() => {
+          this.$router.push({ path: `/article` });
         }, 3000);
       } else {
         this.$refs.modalAlertError.show();
@@ -1203,21 +1228,6 @@ export default {
           }
         }
       });
-    },
-    deleteData: async function () {
-      if (confirm("Are you sure you want to delete this data?") == true) {
-        let data = await this.$callApi(
-          "delete",
-          `${this.$baseUrl}/api/product/article/delete/${this.id}`,
-          null,
-          this.$headers,
-          null
-        );
-
-        if (data.result == 1) {
-          window.location.href = "/article";
-        }
-      }
     },
   },
 };

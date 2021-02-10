@@ -35,7 +35,7 @@
                     v-for="(language, index) in languageList"
                     v-bind:key="index"
                     v-bind:class="[
-                      languageActive == language.id ? 'active' : ''
+                      languageActive == language.id ? 'active' : '',
                     ]"
                     @click="changeLanguage(language.id, index)"
                     :disabled="form.product.isSameLanguage ? true : false"
@@ -52,7 +52,7 @@
                 >
                   <div
                     v-bind:class="[
-                      languageActive == item.languageId ? '' : 'd-none'
+                      languageActive == item.languageId ? '' : 'd-none',
                     ]"
                   >
                     <InputText
@@ -96,7 +96,7 @@
                 >
                   <div
                     v-bind:class="[
-                      languageActive == item.languageId ? '' : 'd-none'
+                      languageActive == item.languageId ? '' : 'd-none',
                     ]"
                   >
                     <TextEditor
@@ -106,7 +106,7 @@
                       placeholder="Type something..."
                       :name="'prodetail' + item.languageId"
                       :value="item.description"
-                      @onDataChange="val => (item.description = val)"
+                      @onDataChange="(val) => (item.description = val)"
                       :v="
                         $v.form.product.translationList.$each.$iter[index]
                           .description
@@ -130,7 +130,7 @@
                     :v="$v.form.product.urlKey"
                     @onKeyup="onUrlkeyChange"
                   />
-                  <!-- <a
+                  <a
                     :href="
                       'https://dev-getfin.dosetech.co/product/' +
                       form.product.urlKey
@@ -139,17 +139,17 @@
                     class="view-txt"
                     v-if="id != 0"
                     >{{ $t("view") }}</a
-                  > -->
-                  <a
+                  >
+                  <!-- <a
                     :href="
-                      'https://getfin.dosetech.co/product/' +
+                      'https://getfin.me/product/' +
                         form.product.urlKey
                     "
                     target="_blank"
                     class="view-txt"
                     v-if="id != 0"
                     >{{ $t("view") }}</a
-                  >
+                  > -->
                 </b-col>
               </b-row>
             </b-card>
@@ -533,12 +533,13 @@
                 :disabled="isDisable"
                 >{{ $t("delete") }}</b-button
               >
-              <b-button
-                href="/"
-                :disabled="isDisable"
-                class="btn-details-set btn-cancel text-uppercase"
-                >{{ $t("cancel") }}</b-button
-              >
+              <router-link to="/product">
+                <b-button
+                  :disabled="isDisable"
+                  class="btn-details-set btn-cancel text-uppercase"
+                  >{{ $t("cancel") }}</b-button
+                >
+              </router-link>
             </b-col>
             <b-col md="6" class="text-sm-right">
               <button
@@ -603,7 +604,7 @@ const validateGP = (typeId, value) => {
     return true;
   }
 };
-const validateGPConfig = value => {
+const validateGPConfig = (value) => {
   if (value == 0) {
     return false;
   } else {
@@ -625,7 +626,7 @@ export default {
     ModalAlert,
     ModalAlertError,
     ModalAlertConfirm,
-    ModalLoading
+    ModalLoading,
   },
   data() {
     return {
@@ -652,11 +653,11 @@ export default {
       dataCategoryHierarchy: {
         categoryList: [],
         isLast: false,
-        selectId: 0
+        selectId: 0,
       },
       requestDeleteUser: {
-        userId: null
-      }
+        userId: null,
+      },
     };
   },
   validations: {
@@ -666,12 +667,12 @@ export default {
         straightPrice: { required },
         sku: { required },
         gp: {
-          required: requiredIf(function() {
+          required: requiredIf(function () {
             return this.form.product.productTypeId == 1;
           }),
           validateGP(value) {
             return validateGP(this.form.product.productTypeId, value);
-          }
+          },
         },
         // sku: {
         //   required: requiredIf(function() {
@@ -679,9 +680,9 @@ export default {
         //   }),
         // },
         quantity: {
-          required: requiredIf(function() {
+          required: requiredIf(function () {
             return this.form.product.productTypeId == 1;
-          })
+          }),
         },
         height: { required },
         weight: { required, minValue: minValue(10) },
@@ -693,59 +694,59 @@ export default {
         attributes: {
           $each: {
             label: {
-              required: requiredIf(function() {
+              required: requiredIf(function () {
                 return this.form.product.productTypeId == 2;
-              })
+              }),
             },
             option: {
               $each: {
                 label: {
-                  required: requiredIf(function() {
+                  required: requiredIf(function () {
                     return this.form.product.productTypeId == 2;
-                  })
-                }
-              }
-            }
-          }
+                  }),
+                },
+              },
+            },
+          },
         },
         children: {
           attributeOption: {
             $each: {
               product: {
                 rawPrice: {
-                  required: requiredIf(function() {
+                  required: requiredIf(function () {
                     return (
                       this.form.product.productTypeId == 2 &&
                       this.form.product.attributes.length === 1
                     );
-                  })
+                  }),
                 },
                 straightPrice: {
-                  required: requiredIf(function() {
+                  required: requiredIf(function () {
                     return (
                       this.form.product.productTypeId == 2 &&
                       this.form.product.attributes.length === 1
                     );
-                  })
+                  }),
                 },
                 sku: {
-                  required: requiredIf(function() {
+                  required: requiredIf(function () {
                     return (
                       this.form.product.productTypeId == 2 &&
                       this.form.product.attributes.length === 1
                     );
-                  })
+                  }),
                 },
                 quantity: {
-                  required: requiredIf(function() {
+                  required: requiredIf(function () {
                     return (
                       this.form.product.productTypeId == 2 &&
                       this.form.product.attributes.length === 1
                     );
-                  })
+                  }),
                 },
                 gp: {
-                  required: requiredIf(function() {
+                  required: requiredIf(function () {
                     return (
                       this.form.product.productTypeId == 2 &&
                       this.form.product.attributes.length === 1
@@ -763,47 +764,47 @@ export default {
                     } else {
                       return true;
                     }
-                  }
-                }
+                  },
+                },
               },
               attribute: {
                 attributeOption: {
                   $each: {
                     product: {
                       rawPrice: {
-                        required: requiredIf(function() {
+                        required: requiredIf(function () {
                           return (
                             this.form.product.productTypeId == 2 &&
                             this.form.product.attributes.length === 2
                           );
-                        })
+                        }),
                       },
                       straightPrice: {
-                        required: requiredIf(function() {
+                        required: requiredIf(function () {
                           return (
                             this.form.product.productTypeId == 2 &&
                             this.form.product.attributes.length === 2
                           );
-                        })
+                        }),
                       },
                       sku: {
-                        required: requiredIf(function() {
+                        required: requiredIf(function () {
                           return (
                             this.form.product.productTypeId == 2 &&
                             this.form.product.attributes.length === 2
                           );
-                        })
+                        }),
                       },
                       quantity: {
-                        required: requiredIf(function() {
+                        required: requiredIf(function () {
                           return (
                             this.form.product.productTypeId == 2 &&
                             this.form.product.attributes.length === 2
                           );
-                        })
+                        }),
                       },
                       gp: {
-                        required: requiredIf(function() {
+                        required: requiredIf(function () {
                           return (
                             this.form.product.productTypeId == 2 &&
                             this.form.product.attributes.length === 2
@@ -818,47 +819,47 @@ export default {
                           } else {
                             return true;
                           }
-                        }
-                      }
+                        },
+                      },
                     },
                     attribute: {
                       attributeOption: {
                         $each: {
                           product: {
                             rawPrice: {
-                              required: requiredIf(function() {
+                              required: requiredIf(function () {
                                 return (
                                   this.form.product.productTypeId == 2 &&
                                   this.form.product.attributes.length === 3
                                 );
-                              })
+                              }),
                             },
                             straightPrice: {
-                              required: requiredIf(function() {
+                              required: requiredIf(function () {
                                 return (
                                   this.form.product.productTypeId == 2 &&
                                   this.form.product.attributes.length === 3
                                 );
-                              })
+                              }),
                             },
                             sku: {
-                              required: requiredIf(function() {
+                              required: requiredIf(function () {
                                 return (
                                   this.form.product.productTypeId == 2 &&
                                   this.form.product.attributes.length === 3
                                 );
-                              })
+                              }),
                             },
                             quantity: {
-                              required: requiredIf(function() {
+                              required: requiredIf(function () {
                                 return (
                                   this.form.product.productTypeId == 2 &&
                                   this.form.product.attributes.length === 3
                                 );
-                              })
+                              }),
                             },
                             gp: {
-                              required: requiredIf(function() {
+                              required: requiredIf(function () {
                                 return (
                                   this.form.product.productTypeId == 2 &&
                                   this.form.product.attributes.length === 3
@@ -873,26 +874,26 @@ export default {
                                 } else {
                                   return true;
                                 }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         productAttributeImage: {
           $each: {
             imageUrl: {
-              required: requiredIf(function() {
+              required: requiredIf(function () {
                 return this.form.product.productTypeId == 2;
-              })
-            }
-          }
+              }),
+            },
+          },
         },
         translationList: {
           $each: {
@@ -900,20 +901,21 @@ export default {
             description: { required },
             metaTitle: { required },
             metaKeyword: { required },
-            metaDescription: { required }
-          }
-        }
-      }
-    }
+            metaDescription: { required },
+          },
+        },
+      },
+    },
   },
-  created: async function() {
+  created: async function () {
     //this.isLoadingData = true;
     await this.getData();
+    await this.changeLanguage(1, 0);
   },
   computed: {
     isMobile() {
       return this.$screenSize.width < 991;
-    }
+    },
   },
   methods: {
     handleForcefresh() {
@@ -922,7 +924,7 @@ export default {
         this.forceRefresh = true;
       });
     },
-    handleChangeSKU: function(evt) {
+    handleChangeSKU: function (evt) {
       if (this.form.product.productTypeId == 2) {
         if (this.form.product.attributes.length == 1) {
           this.form.product.children.attributeOption.forEach(
@@ -933,17 +935,17 @@ export default {
           );
         } else if (this.form.product.attributes.length == 2) {
           let pcount = 0;
-          this.form.product.children.attributeOption.forEach(element => {
-            element.attribute.attributeOption.forEach(element2 => {
+          this.form.product.children.attributeOption.forEach((element) => {
+            element.attribute.attributeOption.forEach((element2) => {
               pcount++;
               element2.product.sku = this.form.product.sku + "-000" + pcount;
             });
           });
         } else if (this.form.product.attributes.length == 3) {
           let pcount = 0;
-          this.form.product.children.attributeOption.forEach(element => {
-            element.attribute.attributeOption.forEach(element2 => {
-              element2.attribute.attributeOption.forEach(element3 => {
+          this.form.product.children.attributeOption.forEach((element) => {
+            element.attribute.attributeOption.forEach((element2) => {
+              element2.attribute.attributeOption.forEach((element3) => {
                 pcount++;
                 element3.product.sku = this.form.product.sku + "-000" + pcount;
               });
@@ -952,7 +954,7 @@ export default {
         }
       }
     },
-    isNumber: function(evt) {
+    isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
 
@@ -981,7 +983,7 @@ export default {
       this.form.product.productAttributeImage = imageList;
       this.handleForcefresh();
     },
-    onUrlkeyChange: function(value) {
+    onUrlkeyChange: function (value) {
       this.form.product.urlKey = this.form.product.urlKey
         .replace(/ /g, "-")
         .replace(/\//g, "");
@@ -996,7 +998,7 @@ export default {
       }
       this.form.product.productTypeId = value;
     },
-    getData: async function() {
+    getData: async function () {
       this.$isLoading = false;
 
       let languages = await this.$callApi(
@@ -1009,7 +1011,6 @@ export default {
 
       if (languages.result == 1) {
         this.languageList = languages.detail;
-        this.changeLanguage(1, 0);
       }
 
       let cat = await this.$callApi(
@@ -1045,12 +1046,13 @@ export default {
 
         if (this.form.product.isSameLanguage) {
           this.imageLogoLang = "";
+          this.languageActive = this.form.product.mainLanguageId;
         } else {
           var index = this.languageList
-            .map(function(x) {
+            .map(function (x) {
               return x.id;
             })
-            .indexOf(this.languageActive);
+            .indexOf(this.form.product.mainLanguageId);
           this.imageLogoLang = this.languageList[index].imageUrl;
         }
 
@@ -1065,16 +1067,18 @@ export default {
       this.form.product.selectCategory = [...list.categoryList];
     },
     changeLanguage(id, index) {
-      this.languageActive = id;
-      this.imageLogoLang = this.languageList[index].imageUrl;
+      if (!this.form.product.isSameLanguage) {
+        this.languageActive = id;
+        this.imageLogoLang = this.languageList[index].imageUrl;
+      }
     },
-    useSameLanguage: async function() {
+    useSameLanguage: async function () {
       Vue.nextTick(() => {
         if (this.form.product.isSameLanguage) {
           this.imageLogoLang = "";
           this.form.product.mainLanguageId = this.languageActive;
           let data = this.form.product.translationList.filter(
-            val => val.languageId == this.form.product.mainLanguageId
+            (val) => val.languageId == this.form.product.mainLanguageId
           );
           if (this.id == 0) {
             if (data.length == 1) {
@@ -1098,13 +1102,13 @@ export default {
           }
         } else {
           var index = this.languageList
-            .map(function(x) {
+            .map(function (x) {
               return x.id;
             })
             .indexOf(this.languageActive);
           this.imageLogoLang = this.languageList[index].imageUrl;
           let data = this.form.product.translationList.filter(
-            val => val.languageId != this.form.product.mainLanguageId
+            (val) => val.languageId != this.form.product.mainLanguageId
           );
           if (this.id == 0) {
             if (data.length == 1) {
@@ -1119,7 +1123,7 @@ export default {
         }
       });
     },
-    checkValidateTranslationList: async function() {
+    checkValidateTranslationList: async function () {
       let isError = false;
       this.languageList.forEach((element, index) => {
         if (!isError) {
@@ -1135,13 +1139,13 @@ export default {
         }
       });
     },
-    setMeta: function(name, index) {
+    setMeta: function (name, index) {
       this.form.product.translationList[index].metaTitle = name;
       this.form.product.translationList[index].metaKeyword = name;
       this.form.product.translationList[index].metaDescription = name;
       this.form.product.urlKey = name.replace(/ /g, "-").replace(/\//g, "");
     },
-    checkForm: async function(flag) {
+    checkForm: async function (flag) {
       var catLength = this.form.product.selectCategory.length;
 
       if (this.form.product.isSameLanguage) {
@@ -1207,8 +1211,8 @@ export default {
             //this.existId = resData.detail.id;
             this.$refs.modalAlert.show();
 
-            setTimeout(function() {
-              window.location.href = "/";
+            setTimeout(() => {
+              this.$router.push({ path: `/product` });
             }, 3000);
           } else {
             this.modalMessage = resData.detail[0];
@@ -1217,7 +1221,7 @@ export default {
         }
       }
     },
-    btnDelete: async function() {
+    btnDelete: async function () {
       this.$refs.isModalAlertConfirm.hide();
 
       let resData = await this.$callApi(
@@ -1230,8 +1234,8 @@ export default {
       this.modalMessage = resData.message;
       if (resData.result == 1) {
         this.$refs.modalAlert.show();
-        setTimeout(function() {
-          window.location.href = "/";
+        setTimeout(() => {
+          this.$router.push({ path: `/product` });
         }, 3000);
       } else {
         this.$refs.modalAlertError.show();
@@ -1249,8 +1253,8 @@ export default {
       // this.form.product.children.attributeOption[
       //   index
       // ].product.imageUrl = image;
-    }
-  }
+    },
+  },
 };
 </script>
 

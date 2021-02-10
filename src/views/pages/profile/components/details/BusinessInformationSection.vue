@@ -155,7 +155,7 @@
             <b-col>
               <UploadFile
                 classLabelName="col-lg-4"
-                classInputName="col-lg-6"
+                classInputName="col-10 col-lg-6"
                 :textFloat="$t('businessDocument')"
                 :placeholder="$t('businessDocument')"
                 format="file"
@@ -179,7 +179,7 @@
             <b-col>
               <UploadFile
                 classLabelName="col-lg-4"
-                classInputName="col-lg-6"
+                classInputName="col-10 col-lg-6"
                 :textFloat="$t('taxDocument')"
                 :placeholder="$t('taxDocument')"
                 format="all"
@@ -241,7 +241,7 @@
             ></b-col>
           </b-row>
           <b-row>
-            <b-col>
+            <b-col v-if="note != ''">
               <label class="font-weight-bold">{{ $t("noteFromAdmin") }}</label>
               <p>{{ note }}</p>
             </b-col>
@@ -264,12 +264,14 @@
     <!-- Modal -->
     <ModalAlert ref="modalAlert" :text="modalMessage" />
     <ModalAlertError ref="modalAlertError" :text="modalMessage" />
+    <ModalLoading ref="modalLoading" :hasClose="false" />
   </div>
 </template>
 
 <script>
 import ModalAlert from "@/components/modal/alert/ModalAlert";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
+import ModalLoading from "@/components/modal/alert/ModalLoading";
 import InputText from "../../../profile/components/inputs/InputText";
 import UploadFile from "../../../profile/components/inputs/UploadFile";
 import InputSelect from "../../../profile/components/inputs/InputSelect";
@@ -282,7 +284,7 @@ export default {
       required: false,
       type: Object,
     },
-     note: {
+    note: {
       required: false,
       type: String,
     },
@@ -290,6 +292,7 @@ export default {
   components: {
     ModalAlert,
     ModalAlertError,
+    ModalLoading,
     InputText,
     UploadFile,
     InputSelect,
@@ -447,6 +450,7 @@ export default {
       this.submit();
     },
     submit: async function () {
+      this.$refs.modalLoading.show();
       let params = {
         id: this.form.businessInformation.id,
         name: this.form.businessInformation.name,
@@ -476,16 +480,16 @@ export default {
         this.$headers,
         params
       );
-
+      this.$refs.modalLoading.hide();
       this.modalMessage = data.message;
       this.isDisable = false;
       if (data.result == 1) {
         //this.reloadData();
         this.$refs.modalAlert.show();
         this.reloadData();
-        // setTimeout(function () {
-        //   window.location.reload();
-        // }, 3000);
+      setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.$hasChange = false;
       } else {
         this.reloadData();
@@ -495,7 +499,7 @@ export default {
     getProvinces: async function (flag) {
       let provinces = await this.$callApi(
         "get",
-        `https://dev-getfin-api.dosetech.co/api/Address/Provinces`,
+        `${this.$baseUrl}/api/Address/Province`,
         null,
         this.$headers,
         null
@@ -520,8 +524,7 @@ export default {
       }
       let district = await this.$callApi(
         "get",
-        `https://dev-getfin-api.dosetech.co/api/Address/Districts/` +
-          provinceId,
+        `${this.$baseUrl}/api/Address/District/` + provinceId,
         null,
         this.$headers,
         null
@@ -545,8 +548,7 @@ export default {
       }
       let subdistrict = await this.$callApi(
         "get",
-        `https://dev-getfin-api.dosetech.co/api/Address/SubDistricts/` +
-          districtId,
+        `${this.$baseUrl}/api/Address/SubDistrict/` + districtId,
         null,
         this.$headers,
         null
@@ -579,8 +581,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-</style>

@@ -2,12 +2,12 @@
   <div>
     <div class="min-vh-100 container-box">
       <CRow class="no-gutters px-3 px-sm-0">
-        <b-col sm="5" class="text-center text-sm-left my-3 my-lg-0">
+        <b-col xl="4" class="text-center text-md-left my-3 my-lg-0">
           <h1 class="mr-sm-4 header-main text-uppercase">
             {{ $t("question") }}
           </h1>
         </b-col>
-        <b-col sm="7" class="text-right">
+        <b-col xl="8" class="text-right">
           <div class="d-flex">
             <b-input-group class="panel-input-serach">
               <b-form-input
@@ -120,7 +120,7 @@
               :fields="questionFields"
               :busy="isBusy"
               show-empty
-              :empty-text="$t('noData')"
+              :empty-text="$t('noQuestion')"
               class="table-list"
             >
               <template v-slot:cell(questionTime)="data">
@@ -278,7 +278,7 @@ export default {
         perPage: 10,
         pageNo: 1,
         verifyStatus: [0, 1],
-        answerStatus: [],
+        answerStatus: [0],
         sortByDateTime: 0,
         search: "",
         startDate: "",
@@ -302,7 +302,7 @@ export default {
   },
   created: async function () {
     await this.getList();
-    this.activeItem = 2;
+    this.activeItem = 0;
   },
   computed: {
     countStartdate: function () {
@@ -419,8 +419,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.menuactive {
-  color: #ffb300 !important;
-}
-</style>

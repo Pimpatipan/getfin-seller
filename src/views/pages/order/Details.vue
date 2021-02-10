@@ -1,4 +1,4 @@
-    <template>
+<template>
   <div v-if="form.order">
     <form class="form-box">
       <b-container class="container-box">
@@ -41,7 +41,13 @@
                     >{{ $t("name") }} :</b-col
                   >
                   <b-col class="mb-2 mb-sm-0" md="9"
-                    >{{ form.order.firstname }} {{ form.order.lastname }}</b-col
+                    >{{ form.order.firstname }} {{ form.order.lastname }}
+
+                    <span
+                      class="f-14 text-blue ml-3 text-underline"
+                      @click="directToChat"
+                      >{{ $t("sendMsg") }}</span
+                    ></b-col
                   >
 
                   <b-col md="3" class="font-weight-bold"
@@ -79,15 +85,32 @@
                 <a
                   href="#"
                   class="f-14 text-blue text-underline"
-                  v-if="form.order.orderStatusId == 4"
+                  v-if="
+                    form.order.orderStatusId == 4 ||
+                      form.order.orderStatusId == 14
+                  "
                   @click="alreadyPack"
                   >{{ $t("alreadyPack") }}</a
                 >
 
+                <div v-if="!form.order.isResendOrder">
+                  <a
+                    href="#"
+                    class="f-14 ml-2 text-underline"
+                    v-if="form.order.orderStatusId == 9"
+                    @click="resendOrder"
+                    >{{ $t("resend") }}</a
+                  >
+                </div>
+                <div v-else class="f-14 d-inline-block">{{ $t("sent") }}</div>
+
                 <a
                   href="#"
                   class="f-14 text-underline ml-2"
-                  v-if="form.order.orderStatusId != 5"
+                  v-if="
+                    form.order.orderStatusId == 1 ||
+                      form.order.orderStatusId == 2
+                  "
                   @click="cancelOrder"
                   >{{ $t("cancelOrder") }}</a
                 >
@@ -120,6 +143,9 @@
                     </p>
                     <p>
                       {{ form.order.shippingAddress.address }}
+                      {{ form.order.shippingAddress.building }}
+                      {{ form.order.shippingAddress.alley }}
+                      {{ form.order.shippingAddress.road }}
                       {{ form.order.shippingAddress.subDistrict }}
                       {{ form.order.shippingAddress.district }}
                       {{ form.order.shippingAddress.province }}
@@ -154,6 +180,9 @@
                     </p>
                     <p>
                       {{ form.order.billingAddress.address }}
+                      {{ form.order.billingAddress.building }}
+                      {{ form.order.billingAddress.alley }}
+                      {{ form.order.billingAddress.road }}
                       {{ form.order.billingAddress.subDistrict }}
                       {{ form.order.billingAddress.district }}
                       {{ form.order.billingAddress.province }}
@@ -167,6 +196,26 @@
                 </div>
               </b-col>
             </b-row>
+
+            <div class="mt-2">
+              <b-button v-b-toggle.collapse-tracking class="collapse-btn">
+                {{ $t("shippingDetails") }}
+                <font-awesome-icon
+                  icon="chevron-right"
+                  class="icon float-right mt-1"
+                />
+                <font-awesome-icon
+                  icon="chevron-down"
+                  class="icon float-right mt-1"
+                />
+              </b-button>
+              <b-collapse id="collapse-tracking" visible>
+                <TrackingTimeline
+                  :trackingNo="form.order.trackingNoShippingJung"
+                  :shippingTypeName="form.order.shippingTypeName"
+                />
+              </b-collapse>
+            </div>
 
             <div class="w-100 mt-3 bg-white">
               <b-table
@@ -186,7 +235,7 @@
                     class="square-box b-contain"
                     v-bind:style="{
                       'background-image':
-                        'url(' + data.item.productImageUrl + ')',
+                        'url(' + data.item.productImageUrl + ')'
                     }"
                   ></div>
                 </template>
@@ -196,12 +245,16 @@
                   <div class="d-flex">
                     <div
                       v-for="(item, index) in data.item.attribute"
+                      :key="index"
                       class="config-tag mr-1 mt-1"
                     >
                       {{ item.label }} : {{ item.option.label }}
                     </div>
                   </div>
                   <div></div>
+                </template>
+                <template v-slot:cell(gp)="data">
+                  <p class="m-0">{{ data.item.gp }} %</p>
                 </template>
                 <template v-slot:cell(subtotal)="data">
                   <p class="m-0">
@@ -224,57 +277,48 @@
                 <b-col sm="6" offset-md="6">
                   <div class="bg-yellow p-3">
                     <b-row class="pb-2">
-                      <b-col cols="7">{{ $t("total") }}</b-col>
+                      <b-col cols="7">{{ $t("subTotalOrder") }}</b-col>
                       <b-col cols="5" class="text-right"
                         >฿ {{ form.order.subtotal | numeral("0,0.00") }}</b-col
                       >
                     </b-row>
+                    <hr />
+
                     <b-row class="pb-2">
-                      <b-col cols="7">{{ $t("discount") }}</b-col>
+                      <b-col cols="7">{{ $t("totalWithGp") }}</b-col>
                       <b-col cols="5" class="text-right"
-                        >- ฿ {{ form.order.discount | numeral("0,0.00") }}</b-col
+                        >฿
+                        {{
+                          form.order.totalWithoutGetFinFee | numeral("0,0.00")
+                        }}</b-col
                       >
                     </b-row>
-                    <!-- <b-row class="pb-2">
-                      <b-col cols="7">{{ $t("affiliateCom") }}</b-col>
+
+                    <b-row class="pb-2" v-if="form.order.discount != 0">
+                      <b-col cols="7">{{ $t("discount") }}</b-col>
                       <b-col cols="5" class="text-right"
-                        >- ฿ {{ 0 | numeral("0,0.00") }}</b-col
+                        >- ฿
+                        {{ form.order.discount | numeral("0,0.00") }}</b-col
                       >
-                    </b-row> -->
+                    </b-row>
+
                     <b-row class="pb-2">
                       <b-col cols="7">{{ $t("getfinFee") }}</b-col>
                       <b-col cols="5" class="text-right"
                         >฿ {{ form.order.getfinFee | numeral("0,0.00") }}</b-col
                       >
                     </b-row>
+
+                    <hr />
+
                     <b-row class="pb-2">
-                      <b-col cols="7">{{ $t("omiseTotal") }}</b-col>
-                      <b-col cols="5" class="text-right"
-                        >฿
-                        {{
-                          (form.order.omiseCharge + form.order.omiseVat) | numeral("0,0.00")
-                        }}</b-col
-                      >
-                    </b-row>
-                    <b-row class="pb-2 f-14">
-                      <b-col cols="7" class="pl-4">{{ $t("omiseCharge") }}</b-col>
-                      <b-col cols="5" class="text-right"
-                        >฿ {{ form.order.omiseCharge| numeral("0,0.00") }}</b-col
-                      >
-                    </b-row>
-                    <b-row class="pb-2 f-14">
-                      <b-col cols="7" class="pl-4">{{ $t("omiseVat") }}</b-col>
-                      <b-col cols="5" class="text-right"
-                        >฿ {{ form.order.omiseVat | numeral("0,0.00") }}</b-col
-                      >
-                    </b-row>
-                    <b-row class="pb-2">
-                      <b-col cols="7">{{ $t("shippingFee") }}</b-col>
+                      <b-col cols="7">{{ $t("shippingOrder") }}</b-col>
                       <b-col cols="5" class="text-right"
                         >฿
                         {{ form.order.shippingCost | numeral("0,0.00") }}</b-col
                       >
                     </b-row>
+
                     <b-row class="pb-2">
                       <b-col cols="7" class="font-weight-bold">{{
                         $t("grandtotal")
@@ -385,6 +429,7 @@ import InputTextArea from "@/components/inputs/InputTextArea";
 import ModalAlert from "@/components/modal/alert/ModalAlert";
 import ModalAlertError from "@/components/modal/alert/ModalAlertError";
 import ModalLoading from "@/components/modal/alert/ModalLoading";
+import TrackingTimeline from "@/views/pages/order/component/TrackingTimeline";
 
 export default {
   name: "OrderDetails",
@@ -394,6 +439,7 @@ export default {
     ModalAlert,
     ModalAlertError,
     ModalLoading,
+    TrackingTimeline
   },
   data() {
     return {
@@ -417,69 +463,87 @@ export default {
         {
           key: "createdTime",
           label: `${this.$t("dateTime")}`,
-          class: "w-100px",
+          class: "w-100px"
         },
         {
           key: "orderSatusName",
           label: `${this.$t("status")}`,
-          class: "w-100px",
+          class: "w-100px"
         },
         {
           key: "updatedByName",
           label: `${this.$t("updateBy")}`,
-          class: "w-100px",
-        },
+          class: "w-100px"
+        }
       ],
       fieldsOrder: [
         {
           key: "id",
-          label: "#",
+          label: "#"
         },
         {
           key: "sku",
           label: "SKU",
-          class: "w-100px",
+          class: "w-100px"
         },
         {
           key: "productImageUrl",
           label: `${this.$t("thumbnail")}`,
-          class: "w-100px",
+          class: "w-100px"
         },
         {
           key: "productName",
           label: `${this.$t("productName")}`,
           tdClass: "text-left w-200",
-          thclass: "w-200",
+          thclass: "w-200"
+        },
+        {
+          key: "gp",
+          label: `GP`,
+          class: "w-100px"
         },
         {
           key: "orderItemQuantity",
-          label: `${this.$t("qty")}`,
+          label: `${this.$t("qty")}`
         },
         {
           key: "subtotal",
           label: `${this.$t("amount")}`,
-          class: "w-100px",
+          class: "w-100px"
+        },
+        {
+          key: "discount",
+          label: `${this.$t("discount")}`,
+          class: "w-100px"
         },
         {
           key: "grandTotal",
           label: `${this.$t("total")}`,
-          class: "w-100px",
-        },
+          class: "w-100px"
+        }
       ],
       upload: {
         transferSlip: "",
         uploadDate: "",
         transferAmount: 0,
-        bankTransfer: 0,
-      },
+        bankTransfer: 0
+      }
     };
   },
-  created: async function () {
+  created: async function() {
     await this.getData();
     //await this.checkStatus();
   },
   methods: {
-    moment: function () {
+    directToChat() {
+      this.$store.commit("setOtherProfile", this.form.order);
+      setTimeout(() => {
+        this.$router.push({
+          path: "/chat"
+        });
+      }, 500);
+    },
+    moment: function() {
       return moment();
     },
     cancelOrder() {
@@ -493,11 +557,11 @@ export default {
         this.isDisable = true;
       }
     },
-    sendRejectOrderRequest: async function () {
+    sendRejectOrderRequest: async function() {
       this.isDisable = true;
       var data = {
         transactionId: this.id,
-        note: this.note,
+        note: this.note
       };
 
       let status = await this.$callApi(
@@ -513,7 +577,7 @@ export default {
         this.getData();
       }
     },
-    checkStatus: function (evt) {
+    checkStatus: function(evt) {
       var status = this.selected;
       if (status == 1 || status == 6 || status == 7) {
         this.status = true;
@@ -521,7 +585,7 @@ export default {
         this.status = false;
       }
     },
-    getData: async function () {
+    getData: async function() {
       //this.isLoadingData = true;
 
       let status = await this.$callApi(
@@ -552,16 +616,16 @@ export default {
         this.$isLoading = true;
       }
     },
-    printShippingLabel: async function () {
+    printShippingLabel: async function() {
       this.$refs.modalLoading.show();
 
       axios({
-        url: `${this.$baseUrl}/api/Transaction/ShippingAddress/${this.id}`,
+        url: `http://s.boxme.asia/api/v1/orders/awb-label/YTMwYmY5NDYtYzdhNi00Njk0LTg3YzgtNDQwZmQ4YjAwZDc1`,
         method: "get",
         headers: this.$headers,
-        responseType: "blob",
+        responseType: "blob"
       })
-        .then((response) => {
+        .then(response => {
           this.$refs.modalLoading.hide();
           var fileURL = window.URL.createObjectURL(new Blob([response.data]));
           var fileLink = document.createElement("a");
@@ -575,7 +639,7 @@ export default {
           document.body.appendChild(fileLink);
           fileLink.click();
         })
-        .catch((error) => {
+        .catch(error => {
           if (error.response.status === 500) {
             // this.imgModal = "/img/icon-unsuccess.png";
             // this.msgModal =
@@ -584,10 +648,10 @@ export default {
           }
         });
     },
-    alreadyPack: async function () {
+    alreadyPack: async function() {
       let body = {
         transactionId: this.id,
-        note: "",
+        note: ""
       };
 
       this.$refs.modalLoading.show();
@@ -599,10 +663,40 @@ export default {
         this.$headers,
         body
       );
+      this.modalMessage = data.message || data.detail[0];
+      if (data.result == 1) {
+        this.$refs.modalLoading.hide();
+        this.$refs.modalAlert.show();
+
+        //setTimeout(function () {
+        this.getData();
+
+        setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
+        //}, 3000);
+      } else {
+        this.$refs.modalAlertError.show();
+      }
+    },
+    resendOrder: async function() {
+      this.$refs.modalLoading.show();
+
+      let data = await this.$callApi(
+        "post",
+        `${this.$baseUrl}/api/transaction/ResendOrder/` + this.id,
+        null,
+        this.$headers,
+        null
+      );
       this.modalMessage = data.message;
       if (data.result == 1) {
         this.$refs.modalLoading.hide();
         this.$refs.modalAlert.show();
+
+        setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
 
         //setTimeout(function () {
         this.getData();
@@ -610,8 +704,8 @@ export default {
       } else {
         this.$refs.modalAlertError.show();
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -733,6 +827,7 @@ export default {
   color: white;
   border-radius: 15px;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 @media (max-width: 992px) {

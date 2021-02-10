@@ -34,14 +34,13 @@
             <div
               class="square-box m-0 review-img b-contain"
               v-bind:style="{
-                'background-image': 'url(' + form.imageUrl + ')',
+                'background-image': 'url(' + form.imageUrl + ')'
               }"
             ></div>
           </b-col>
           <b-col sm="10">
             <p class="mb-1 text-secondary f-14">SKU : {{ form.sku }}</p>
             <p class="m-0 font-weight-bold">{{ form.productName }}</p>
-            <p>{{ form.shortDescription }}</p>
           </b-col>
         </b-row>
 
@@ -82,12 +81,13 @@
 
         <b-row class="mt-4 no-gutters">
           <b-col md="4">
-            <b-button
-              href="/review"
-              :disabled="isDisable"
-              class="btn-details-set btn-secondary text-uppercase"
-              >{{ $t("cancel") }}</b-button
-            >
+            <router-link to="/review">
+              <b-button
+                :disabled="isDisable"
+                class="btn-details-set btn-secondary text-uppercase"
+                >{{ $t("cancel") }}</b-button
+              >
+            </router-link>
           </b-col>
           <b-col md="8" class="text-sm-right">
             <b-form-checkbox
@@ -127,7 +127,7 @@ export default {
     InputTextArea,
     ModalAlert,
     ModalAlertError,
-    ModalLoading,
+    ModalLoading
   },
   data() {
     return {
@@ -137,14 +137,15 @@ export default {
       isDisable: false,
       error: false,
       modalMessage: "",
-      reply: "",
+      reply: ""
     };
   },
-  created: async function () {
+  created: async function() {
     await this.getList();
+    //document.querySelectorAll("a[href='/review']").className = "mystyle";
   },
   methods: {
-    getList: async function () {
+    getList: async function() {
       let resData = await this.$callApi(
         "get",
         `${this.$baseUrl}/api/Review/Detail/${this.id}`,
@@ -157,7 +158,7 @@ export default {
         this.$isLoading = true;
       }
     },
-    replyReview: async function () {
+    replyReview: async function() {
       if (this.form.answer == null || this.form.answer == "") {
         this.error = true;
         return;
@@ -176,7 +177,7 @@ export default {
       let data = {
         id: this.id,
         answer: this.form.answer,
-        isNotifyEmail: notiFlag,
+        isNotifyEmail: notiFlag
       };
 
       let resData = await this.$callApi(
@@ -189,16 +190,20 @@ export default {
       this.modalMessage = resData.message;
       this.isDisable = false;
       this.$refs.modalLoading.hide();
+      this.$store.dispatch("getActiveData");
       if (resData.result == 1) {
         this.$refs.modalAlert.show();
         this.reply = "";
         this.notibuyer = false;
+        setTimeout(() => {
+          this.$refs.modalAlert.hide();
+        }, 3000);
         this.getList();
       } else {
         this.$refs.modalAlertError.show();
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
